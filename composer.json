@@ -1,0 +1,18 @@
+{
+    "name": "ocdladefense/node-template",
+    "description": "Example module with basic node / babel functionality.",
+    "type": "wordpress-theme",
+    "authors": [
+        {
+            "name": "José Bernal",
+            "email": "jbernal.web.dev@gmail.com"
+        },
+        {
+            "name": "Isaac Walters",
+            "email": "isaacwalters2019@gmail.com"
+        }
+    ],
+    "require": {
+        "composer/installers":"~1.0"
+    }
+}
