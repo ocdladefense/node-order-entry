@@ -1,17 +1,17 @@
 /** @jsx vNode */
 
-import { vNode, addEvent, getMainContainer, changeMainContainer, myAppEventHandler } from '../../../node_modules/@ocdladefense/view/view.js';
+import { vNode, addEvent, getMainContainer, changeMainContainer, myAppEventHandler, render } from '../../../node_modules/@ocdladefense/view/view.js';
 
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
 
 
 import { cityFormatter, stateFormatter, createMemberX } from './contactFieldFormat.js';
 
-import { getEvents, getEventDetails, getRegistrants, getCountRegistrants } from './data.js';
+import { getOrders, getOrder, getEventDetails, getRegistrants, getCountRegistrants } from './data.js';
 
-import { EventListFull, EventFull } from './components.js';
+import { HomeFullNode } from './components.js';
 
-import { switchToList, switchToDetails, doSearch } from './events.js';
+import { switchOrder } from './events.js';
 
 
 
@@ -19,13 +19,13 @@ function init() {
     // Probably change to document.querySelector().
     changeMainContainer("main");
 
-    let theList = getEvents();
+    let theList = getOrders();
 
 
     Promise.all([theList]).then(function(data) {
-        CACHE.set("events", data[0]);
+        CACHE.set("orders", data[0]);
         
-        let initTree = <EventListFull events={data[0]} searchBar={""} datesChecked={false} contactsChecked={false} />;
+        let initTree = <HomeFullNode orders={data[0]} />;
         
         HISTORY.clear();
         HISTORY.set(0, initTree);
@@ -35,6 +35,7 @@ function init() {
     document.addEventListener("click", myAppEventHandler);
 }
 
+/*
 addEvent("search", function() {
     let stringEntered = document.getElementById("searchBar").value;
     let orderDatesAcs = document.getElementById("dateCheckBox").checked;
@@ -43,7 +44,8 @@ addEvent("search", function() {
     return doSearch(stringEntered, orderDatesAcs, orderAttendeesDesc);
 });
 addEvent("list", switchToList);
-addEvent("details", switchToDetails);
+*/
+addEvent("load-order", switchOrder);
 
 
 domReady(init);

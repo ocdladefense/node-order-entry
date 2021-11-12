@@ -15,7 +15,7 @@ class ExampleModule extends Module {
 
 
 
-    public function theCallback() {
+    public function home() {
 			$tpl = new Template("default");
 			$tpl->addPath(__DIR__ . "/templates");
 
@@ -26,20 +26,40 @@ class ExampleModule extends Module {
 
 
 
-    public function getJsonList() {
+    public function getOrders() {
 			$api = $this->loadForceApi();
 
-			$results = $api->query("SELECT Name, Id, Start_Date__c, Banner_Location_Text__c FROM Event__c ORDER BY Start_Date__c DESC");
+			$results = $api->query("SELECT Id, EffectiveDate, BillToContact.Name, Status, OrderNumber, TotalAmount FROM Order Order By EffectiveDate DESC LIMIT 25");
 
 			$records = $results->getRecords();
 		
 			return $records;
     }
 
+	public function getSingleOrder($Id) {
+		$api = $this->loadForceApi();
+
+		$results = $api->query("SELECT Id, EffectiveDate, BillToContact.Name, Status, OrderNumber, TotalAmount FROM Order  WHERE Id = '$Id'");
+
+		$records = $results->getRecords();
+	
+		return $records;
+}
+
+	public function getOrderItems($Id) {
+		$api = $this->loadForceApi();
+
+		$results = $api->query("SELECT Id, Product2Id, Product2.Name, UnitPrice, Quantity, TotalPrice FROM OrderItem WHERE OrderId = '$Id'");
+
+		$records = $results->getRecords();
+	
+		return $records;
+}
 
 
 
-	public function getJsonDetails($id) {
+
+	public function getJsonListEntries($id) {
 			$api = $this->loadForceApi();
 
 			$results = $api->query("SELECT Name, Id, Start_date__c FROM Event__c WHERE Id = '$id'");

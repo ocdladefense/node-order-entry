@@ -1,18 +1,29 @@
 /** @jsx vNode */
-export { switchToList, switchToDetails, doSearch };
+export { switchToList, switchOrder, doSearch };
 import { vNode } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
-import { EventListFull, EventFull, EventList, EventSearch } from './components.js';
-import { getEvents, getEventDetails, getRegistrants, getCountRegistrants } from './data.js';
+import { OrderRightSide, HomeFullNode } from './components.js';
+import { getOrders, getOrder, getSingleOrder } from './data.js';
+
+function switchOrder(props) {
+  var orderItems = getOrder(props.recordId);
+  var singleOrder = getSingleOrder(props.recordId);
+  var theList = getOrders();
+  return Promise.all([orderItems, theList, singleOrder]).then(function (data) {
+    console.log("promise finished");
+    return vNode(HomeFullNode, {
+      orders: data[1],
+      order: data[2],
+      orderItems: data[0]
+    });
+  });
+}
 
 function switchToDetails(id) {
   var event = getEventDetails(id); // let contacts = getRegistrants(id);
 
   return Promise.all([event]).then(function (data) {
-    document.getElementById("switchButton").classList.value = "switchButton";
-    return vNode(EventFull, {
-      event: data[0]
-    }); // contacts={data[1]} />;
+    document.getElementById("switchButton").classList.value = "switchButton"; //return <EventFull event={data[0]} />;// contacts={data[1]} />;
   });
 }
 
@@ -35,14 +46,9 @@ function doSearch(stringEntered, orderDatesAcs, orderAttendeesDesc) {
 
   if (orderAttendeesDesc == true) {
     results.sort(contactsHighestToLowest);
-  }
+  } //let virtualNodes = <div><EventListFull events={results} searchBar={stringEntered} datesChecked={orderDatesAcs} contactsChecked={orderAttendeesDesc} /></div>;
 
-  var virtualNodes = vNode("div", null, vNode(EventListFull, {
-    events: results,
-    searchBar: stringEntered,
-    datesChecked: orderDatesAcs,
-    contactsChecked: orderAttendeesDesc
-  }));
+
   return Promise.resolve(virtualNodes);
 }
 

@@ -1,9 +1,21 @@
-export { getEvents, getEventDetails, getRegistrants, getCountRegistrants };
+export { getOrders, getOrder, getSingleOrder, getEventDetails, getRegistrants, getCountRegistrants };
 
 
 
-function getEvents() {
-    return fetch("/example/list/json")
+function getOrders() {
+    return fetch("/orderentry/orders")
+    .then(resp => resp.json())
+    .then(data => {return data;});
+}
+
+function getOrder(Id) {
+    return fetch("/orderentry/orderitems/" + Id)
+    .then(resp => resp.json())
+    .then(data => {return data;});
+}
+
+function getSingleOrder(Id) {
+    return fetch("/orderentry/singleorder/" + Id)
     .then(resp => resp.json())
     .then(data => {return data;});
 }

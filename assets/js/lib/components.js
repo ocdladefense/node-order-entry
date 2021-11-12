@@ -5,19 +5,263 @@
 This is our list of components to be used in the app.
 
 **/
-export { EventListFull, EventFull, EventList, EventSearch };
+export { HomeFullNode, OrderRightSide };
 import { vNode } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
-import { cityFormatter, stateFormatter, createMemberX } from './contactFieldFormat.js';
 
-var EventListFull = function EventListFull(props) {
-  return vNode("div", null, vNode(EventSearch, {
-    searchBar: props.searchBar,
-    datesChecked: props.datesChecked,
-    contactsChecked: props.contactsChecked
-  }), vNode(EventList, {
-    events: props.events
+var HomeFullNode = function HomeFullNode(props) {
+  return vNode("div", null, vNode(OrderTopFull, {
+    orders: props.orders,
+    order: props.order,
+    orderItems: props.orderItems
+  }), vNode(OrderBotFull, {
+    orders: props.orders
   }));
+};
+
+var OrderTopFull = function OrderTopFull(props) {
+  return vNode("div", {
+    id: "topscreen",
+    style: "width: 100%;"
+  }, vNode(OrderLeftSide, {
+    orders: props.orders
+  }), vNode(OrderRightSide, {
+    orders: props.orders,
+    order: props.order,
+    orderItems: props.orderItems
+  }));
+};
+
+var OrderLeftSide = function OrderLeftSide(props) {
+  var orders = props.orders;
+  var list = [];
+
+  for (var i = 0; i < orders.length; i++) {
+    list.push(vNode(OrderListOrder, {
+      order: orders[i]
+    }));
+  }
+
+  return vNode("div", {
+    "class": "orderList"
+  }, list);
+};
+
+var OrderListOrder = function OrderListOrder(props) {
+  // let theCount = parseInt(CACHE.get("eventsContactCount")[props.event.Id] && CACHE.get("eventsContactCount")[props.event.Id].expr0).toString();
+  // theCount = CACHE.get("eventsContactCount")[props.event.Id] ? theCount : "None";
+  //let theCount = "5";
+  var fn = function fn(e) {
+    e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.recordId;
+    e.frameworkDetail = e.currentTarget.dataset;
+    e.action = e.currentTarget.dataset.action;
+  };
+
+  var classString = props.order.Status == 'Draft' ? 'yellow-highlight' : 'green-highlight';
+  classString = classString + " orderbox-highlights";
+  return vNode("div", {
+    "class": "orderClick orderItem",
+    "data-action": "load-order",
+    onclick: fn,
+    href: "#" + props.order.Id,
+    "data-record-id": props.order.Id
+  }, vNode("div", {
+    "class": classString
+  }, vNode("div", {
+    "class": "listOrderId"
+  }, props.order.OrderNumber), vNode("div", {
+    "class": "listOrderDate"
+  }, props.order.EffectiveDate)), vNode("div", null, vNode("p", {
+    "class": "listOrderText"
+  }, props.order.BillToContact ? props.order.BillToContact.Name : "NA")), vNode("div", null, vNode("p", {
+    "class": "listOrderText"
+  }, props.order.TotalPrice)));
+};
+
+var OrderRightSide = function OrderRightSide(props) {
+  var order = props.order;
+  var orderItems = props.orderItems; //console.log(order);
+  //console.log(orderItems);
+
+  var theList = vNode(OrderItemList, {
+    order: props.order,
+    orderItems: props.orderItems
+  });
+
+  if (order) {
+    order = props.order[0];
+    var contactName = "NA"; //order.BillToContact ? props.order.BillToContact.Name : "NA";
+    //console.log(order.BillToContact.Name);
+
+    if (order.BillToContact) {
+      contactName = order.BillToContact.Name;
+    }
+
+    return vNode("div", null, vNode("div", null, vNode("div", null, vNode("h1", null, "Order " + order.OrderNumber)), vNode("div", {
+      "class": "yellow-highlight",
+      style: "float:right;"
+    }, "Created " + order.EffectiveDate + ", by NEED THIS DATA"), vNode("h2", null, contactName), vNode("h4", null, order.TotalAmount), theList));
+  } else {
+    console.log("right side not rendered");
+    return vNode("div", null, "Right side not rendered");
+  }
+};
+
+var OrderItemList = function OrderItemList(props) {
+  var order = props.order;
+  var orderItemsProps = props.orderItems;
+  var orderItemsVnodes = [];
+
+  for (var i = 0; i < orderItemsProps.length; i++) {
+    orderItemsVnodes.push(vNode(OrderListItem, {
+      orderItem: orderItemsProps[i]
+    }));
+  }
+
+  return vNode("div", {
+    style: "width:70%; float:left;"
+  }, vNode("ul", {
+    "class": "table-row table-headers"
+  }, vNode("li", {
+    "class": "table-cell"
+  }, "Actions"), vNode("li", {
+    "class": "table-cell"
+  }, "Contact"), vNode("li", {
+    "class": "table-cell"
+  }, "Experation"), vNode("li", {
+    "class": "table-cell"
+  }, "Product"), vNode("li", {
+    "class": "table-cell"
+  }, "Line Descritpion"), vNode("li", {
+    "class": "table-cell"
+  }, "Note 1"), vNode("li", {
+    "class": "table-cell"
+  }, "Note 2"), vNode("li", {
+    "class": "table-cell"
+  }, "Note 3"), vNode("li", {
+    "class": "table-cell"
+  }, "Unit Price"), vNode("li", {
+    "class": "table-cell"
+  }, "Quantity"), vNode("li", {
+    "class": "table-cell"
+  }, "Sub Total")), orderItemsVnodes);
+};
+
+var OrderListItem = function OrderListItem(props) {
+  var orderItem = props.orderItem; //Id, Product2Id, Product2.Name, UnitPrice, Quantity, TotalPrice
+
+  var tableContact = "NA";
+  var tableExpiry = "NA";
+  var tableProduct = "NA";
+  var tableDiscription = "NA";
+  var tablnNote1 = "NA";
+  var tableNote2 = "NA";
+  var tableNote3 = "NA";
+  var tableUnitPrice = "NA";
+  var tableQuantity = "NA";
+  var tableSubtotal = "NA";
+
+  if (orderItem.Product2) {
+    if (orderItem.Product2.Name) {
+      tableProduct = orderItem.Product2.Name;
+    }
+  }
+
+  if (orderItem.UnitPrice) {
+    tableUnitPrice = orderItem.UnitPrice;
+  }
+
+  if (orderItem.Quantity) {
+    tableQuantity = orderItem.Quantity;
+  }
+
+  if (orderItem.TotalPrice) {
+    tableSubtotal = orderItem.TotalPrice;
+  }
+
+  return vNode("ul", {
+    "class": "table-row"
+  }, vNode("li", {
+    "class": "order-actions table-cell"
+  }, vNode("a", {
+    target: "_blank",
+    "class": "marginMaker2"
+  }, "remove")), vNode("li", {
+    "class": "order-contact table-cell"
+  }, vNode("input", {
+    type: "text",
+    id: "contact",
+    value: tableContact,
+    required: true,
+    maxlength: "100"
+  })), vNode("li", {
+    "class": "order-experation table-cell"
+  }, vNode("input", {
+    type: "text",
+    id: "experation",
+    value: tableExpiry,
+    maxlength: "100"
+  })), vNode("li", {
+    "class": "order-product table-cell"
+  }, vNode("input", {
+    type: "text",
+    id: "product",
+    value: tableProduct,
+    required: true,
+    maxlength: "100"
+  })), vNode("li", {
+    "class": "order-description table-cell"
+  }, vNode("input", {
+    type: "text",
+    id: "discription",
+    value: tableDiscription,
+    maxlength: "100"
+  })), vNode("li", {
+    "class": "order-note1 table-cell"
+  }, vNode("input", {
+    type: "text",
+    id: "note1",
+    value: tablnNote1,
+    maxlength: "300"
+  })), vNode("li", {
+    "class": "order-note2 table-cell"
+  }, vNode("input", {
+    type: "text",
+    id: "note2",
+    value: tableNote2,
+    maxlength: "300"
+  })), vNode("li", {
+    "class": "order-note3 table-cell"
+  }, vNode("input", {
+    type: "text",
+    id: "note3",
+    value: tableNote3,
+    maxlength: "300"
+  })), vNode("li", {
+    "class": "order-unitprice table-cell"
+  }, vNode("input", {
+    type: "text",
+    id: "unitprice",
+    value: tableUnitPrice,
+    required: true,
+    maxlength: "100"
+  })), vNode("li", {
+    "class": "order-quantity table-cell"
+  }, vNode("input", {
+    type: "number",
+    id: "quantity",
+    value: tableQuantity,
+    required: true,
+    maxlength: "100"
+  })), vNode("li", {
+    "class": "order-subtotal table-cell"
+  }, vNode("input", {
+    type: "number",
+    id: "subtotal",
+    value: tableSubtotal,
+    required: true,
+    maxlength: "100"
+  })));
 };
 
 var EventSearch = function EventSearch(props) {
@@ -148,4 +392,11 @@ var Attendee = function Attendee(props) {
   }, contact.Product2.Name), vNode("li", {
     "class": "table-cell attendee-city"
   }, ((_contact$Contact__r$M = contact.Contact__r.MailingCity) !== null && _contact$Contact__r$M !== void 0 ? _contact$Contact__r$M : ' ') + stateFormatter(contact.Contact__r.MailingState)));
+};
+
+var OrderBotFull = function OrderBotFull(props) {
+  return vNode("div", {
+    id: "bottomscreen",
+    style: "clear:both"
+  });
 };

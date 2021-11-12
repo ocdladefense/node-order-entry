@@ -1,14 +1,33 @@
 /** @jsx vNode */
 
-export { switchToList, switchToDetails, doSearch };
+export { switchToList, switchOrder, doSearch };
 
 
 import { vNode } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
 
 
-import { EventListFull, EventFull, EventList, EventSearch }  from './components.js';
-import { getEvents, getEventDetails, getRegistrants, getCountRegistrants } from './data.js';
+import { OrderRightSide, HomeFullNode }  from './components.js';
+import { getOrders, getOrder, getSingleOrder } from './data.js';
+
+
+function switchOrder(props) {
+
+    let orderItems = getOrder(props.recordId);
+    let singleOrder = getSingleOrder(props.recordId);
+    let theList = getOrders();
+    
+    return Promise.all([orderItems, theList, singleOrder]).then(function(data) {
+        console.log("promise finished");
+
+        return <HomeFullNode orders={data[1]} order={data[2]} orderItems={data[0]} />;
+    });
+
+}
+
+
+
+
 
 
 
@@ -20,7 +39,7 @@ function switchToDetails(id) {
     return Promise.all([event]).then(function(data) {
         document.getElementById("switchButton").classList.value = "switchButton";
 
-        return <EventFull event={data[0]} />;// contacts={data[1]} />;
+        //return <EventFull event={data[0]} />;// contacts={data[1]} />;
     });
 }
 
@@ -46,7 +65,7 @@ function doSearch(stringEntered, orderDatesAcs, orderAttendeesDesc) {
         results.sort(contactsHighestToLowest);
     }
 
-    let virtualNodes = <div><EventListFull events={results} searchBar={stringEntered} datesChecked={orderDatesAcs} contactsChecked={orderAttendeesDesc} /></div>;
+    //let virtualNodes = <div><EventListFull events={results} searchBar={stringEntered} datesChecked={orderDatesAcs} contactsChecked={orderAttendeesDesc} /></div>;
     
     return Promise.resolve(virtualNodes);
 }
