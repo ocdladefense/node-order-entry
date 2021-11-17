@@ -49,7 +49,7 @@ class ExampleModule extends Module {
 	public function getOrderItems($Id) {
 		$api = $this->loadForceApi();
 
-		$results = $api->query("SELECT Id, Product2Id, Product2.Name, UnitPrice, Quantity, TotalPrice FROM OrderItem WHERE OrderId = '$Id'");
+		$results = $api->query("SELECT Id, Product2Id, Note_1__c, Note_2__c, Note_3__c, FirstName__c, LastName__c, ExpirationDate__c, Product2.Name, UnitPrice, Quantity, TotalPrice FROM OrderItem WHERE OrderId = '$Id'");
 
 		$records = $results->getRecords();
 	

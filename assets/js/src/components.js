@@ -9,7 +9,7 @@ This is our list of components to be used in the app.
 
 
 
-export { HomeFullNode, OrderRightSide };
+export { HomeFullNode, OrderItems };
 
 
 import { vNode } from '../../../node_modules/@ocdladefense/view/view.js';
@@ -22,22 +22,22 @@ import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.j
 const HomeFullNode = function(props) {
     return(
         <div>
-            <OrderTopFull orders={props.orders} order={props.order} orderItems={props.orderItems} /> 
-            <OrderBotFull orders={props.orders} />
+            <OrderDetailsSection orders={props.orders} order={props.order} orderItems={props.orderItems} /> 
+            <LargeOrderList orders={props.orders} />
         </div>
     )
 };
 
-const OrderTopFull = function(props) {
+const OrderDetailsSection = function(props) {
     return(
         <div id="topscreen" style="width: 100%;">
-            <OrderLeftSide orders={props.orders} /> 
-            <OrderRightSide orders={props.orders} order={props.order} orderItems={props.orderItems} />
+            <SmallOrderList orders={props.orders} /> 
+            <OrderItems orders={props.orders} order={props.order} orderItems={props.orderItems} />
         </div>
     )
 };
 
-const OrderLeftSide = function(props) {
+const SmallOrderList = function(props) {
     let orders = props.orders;
 
     let list = [];
@@ -84,13 +84,19 @@ const OrderListOrder = function(props) {
 };
 
 
-const OrderRightSide = function(props) {
+const OrderItems = function(props) {
     let order = props.order;
 
     let orderItems = props.orderItems;
 
     //console.log(order);
     //console.log(orderItems);
+
+    //let fn = function(e) {
+    //    console.log("ds");
+    //    e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.orderId;
+    //    e.frameworkDetail = [e.frameworkDetail, e.orderId];
+    //};
 
     let theList = <OrderItemList order={props.order} orderItems={props.orderItems} />;
 
@@ -129,11 +135,11 @@ const OrderRightSide = function(props) {
 
 const OrderItemList = function(props) {
     let order = props.order;
-    let orderItemsProps = props.orderItems;
+    let orderItemsProps = props.orderItems || [];
 
     let orderItemsVnodes = [];
     for (let i = 0; i < orderItemsProps.length; i++) {
-        orderItemsVnodes.push(<OrderListItem orderItem={orderItemsProps[i]} />);
+        orderItemsVnodes.push(<OrderItem order={order} orderItem={orderItemsProps[i]} />);
     }
 
     return (
@@ -156,16 +162,22 @@ const OrderItemList = function(props) {
     )
 };
 
-const OrderListItem = function(props) {
+const OrderItem = function(props) {
 
     let orderItem = props.orderItem;
+    let order = props.order;
+
+    //console.log("d");
+    //console.log(props);
+    //console.log(orderItem);
+    //console.log(order[0].Id);
 
     //Id, Product2Id, Product2.Name, UnitPrice, Quantity, TotalPrice
     let tableContact = "NA";
     let tableExpiry = "NA";
     let tableProduct = "NA";
     let tableDiscription = "NA";
-    let tablnNote1 = "NA";
+    let tableNote1 = "NA";
     let tableNote2 = "NA";
     let tableNote3 = "NA";
     let tableUnitPrice = "NA";
@@ -186,22 +198,52 @@ const OrderListItem = function(props) {
     if (orderItem.TotalPrice) {
         tableSubtotal = orderItem.TotalPrice;
     }
+    if (orderItem.Note_1__c) {
+        tableNote1 = orderItem.Note_1__c;
+    }
+    if (orderItem.Note_2__c) {
+        tableNote2 = orderItem.Note_2__c;
+    }
+    if (orderItem.Note_3__c) {
+        tableNote3 = orderItem.Note_3__c;
+    }
+    if (orderItem.FirstName__c) {
+        if (orderItem.LastName__c) {
+            tableContact = orderItem.FirstName__c + " " + orderItem.LastName__c;
+        }
+        else {
+            tableContact = orderItem.FirstName__c;
+        }
+    }
+    else {
+        if (orderItem.LastName__c) {
+            tableContact = orderItem.LastName__c;
+        }
+    }
+    if (orderItem.ExpirationDate__c) {
+        tableExpiry = orderItem.ExpirationDate__c;
+    }
 
-    //function called update total price, called here and in events where we look for updated text
 
+    let fn = function(e) {
+        e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.recordId && e.currentTarget.dataset.orderitemId;
+        e.frameworkDetail = e.currentTarget.dataset;
+        e.action = e.currentTarget.dataset.action;
+    };
+    
     return (
-        <ul class="table-row">
+        <ul class="table-row" Id={orderItem.Id} onchange={fn} data-orderitem-id={order[0].Id} data-record-id={orderItem.Id} data-action="save-order-item">
             <li class="order-actions table-cell"><a target="_blank" class="marginMaker2">remove</a></li>
-            <li class="order-contact table-cell"><input type="text" id="contact" value={tableContact} required maxlength="100" /></li>
-            <li class="order-experation table-cell"><input type="text" id="experation" value={tableExpiry} maxlength="100" /></li>
-            <li class="order-product table-cell"><input type="text" id="product" value={tableProduct} required maxlength="100" /></li>
-            <li class="order-description table-cell"><input type="text" id="discription" value={tableDiscription} maxlength="100" /></li>
-            <li class="order-note1 table-cell"><input type="text" id="note1" value={tablnNote1} maxlength="300" /></li>
-            <li class="order-note2 table-cell"><input type="text" id="note2" value={tableNote2} maxlength="300" /></li>
-            <li class="order-note3 table-cell"><input type="text" id="note3" value={tableNote3} maxlength="300" /></li>
-            <li class="order-unitprice table-cell"><input type="text" id="unitprice" value={tableUnitPrice} required maxlength="100" /></li>
-            <li class="order-quantity table-cell"><input type="number" id="quantity" value={tableQuantity} required maxlength="100" /></li>
-            <li class="order-subtotal table-cell"><input type="number" id="subtotal" value={tableSubtotal} required maxlength="100" /></li>
+            <li class="order-contact table-cell"><input class="orderOnChange orderItemData contact" type="text" id="contact" value={tableContact} required maxlength="100" /></li>
+            <li class="order-experation table-cell"><input class="orderOnChange orderItemData expiration" type="text" id="experation" value={tableExpiry} maxlength="100" /></li>
+            <li class="order-product table-cell"><input class="orderOnChange orderItemData product" type="text" id="product" value={tableProduct} required maxlength="100" /></li>
+            <li class="order-description table-cell"><input class="orderOnChange orderItemData description" type="text" id="discription" value={tableDiscription} maxlength="100" /></li>
+            <li class="order-note1 table-cell"><input class="orderOnChange orderItemData note1" type="text" id="note1" value={tableNote1} maxlength="300" /></li>
+            <li class="order-note2 table-cell"><input class="orderOnChange orderItemData note2" type="text" id="note2" value={tableNote2} maxlength="300" /></li>
+            <li class="order-note3 table-cell"><input class="orderOnChange orderItemData note3" type="text" id="note3" value={tableNote3} maxlength="300" /></li>
+            <li class="order-unitprice table-cell"><input class="orderOnChange orderItemData unitprice" type="text" id="unitprice" value={tableUnitPrice} required maxlength="100" /></li>
+            <li class="order-quantity table-cell"><input class="orderOnChange orderItemData quantity" type="number" id="quantity" value={tableQuantity} required maxlength="100" /></li>
+            <li class="order-subtotal table-cell"><input class="orderOnChange orderItemData subtotal" type="number" id="subtotal" value={tableSubtotal} required maxlength="100" /></li>
         </ul>
     )
 };
@@ -216,9 +258,7 @@ const EventSearch = function(props) {
     return (
         <div class="flex-parent object-list" id="searchArea">
             <h1>My Object</h1>
-
-						<h3>Recent records</h3>
-
+			<h3>Recent records</h3>
             <h3>Record search</h3>
             <div class="form-item">
             	<input type="text" id="record-search" placeholder="Enter search terms..." value={searchBar} />
@@ -236,7 +276,7 @@ const EventSearch = function(props) {
             <div class="form-item">
             	<label>Number of Attendees from Highest to Lowest</label>
             	<input type="checkbox" id="contacts-checkbox" checked={contactsChecked ? true : null} />
-						</div>
+		    </div>
 						
         </div>
     )
@@ -346,7 +386,7 @@ const Attendee = function(props) {
 
 
 
-const OrderBotFull = function(props) {
+const LargeOrderList = function(props) {
     return(
         <div id="bottomscreen" style="clear:both">
         </div>

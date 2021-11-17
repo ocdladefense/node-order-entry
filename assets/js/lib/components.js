@@ -5,34 +5,34 @@
 This is our list of components to be used in the app.
 
 **/
-export { HomeFullNode, OrderRightSide };
+export { HomeFullNode, OrderItems };
 import { vNode } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
 
 var HomeFullNode = function HomeFullNode(props) {
-  return vNode("div", null, vNode(OrderTopFull, {
+  return vNode("div", null, vNode(OrderDetailsSection, {
     orders: props.orders,
     order: props.order,
     orderItems: props.orderItems
-  }), vNode(OrderBotFull, {
+  }), vNode(LargeOrderList, {
     orders: props.orders
   }));
 };
 
-var OrderTopFull = function OrderTopFull(props) {
+var OrderDetailsSection = function OrderDetailsSection(props) {
   return vNode("div", {
     id: "topscreen",
     style: "width: 100%;"
-  }, vNode(OrderLeftSide, {
+  }, vNode(SmallOrderList, {
     orders: props.orders
-  }), vNode(OrderRightSide, {
+  }), vNode(OrderItems, {
     orders: props.orders,
     order: props.order,
     orderItems: props.orderItems
   }));
 };
 
-var OrderLeftSide = function OrderLeftSide(props) {
+var SmallOrderList = function SmallOrderList(props) {
   var orders = props.orders;
   var list = [];
 
@@ -78,10 +78,15 @@ var OrderListOrder = function OrderListOrder(props) {
   }, props.order.TotalPrice)));
 };
 
-var OrderRightSide = function OrderRightSide(props) {
+var OrderItems = function OrderItems(props) {
   var order = props.order;
   var orderItems = props.orderItems; //console.log(order);
   //console.log(orderItems);
+  //let fn = function(e) {
+  //    console.log("ds");
+  //    e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.orderId;
+  //    e.frameworkDetail = [e.frameworkDetail, e.orderId];
+  //};
 
   var theList = vNode(OrderItemList, {
     order: props.order,
@@ -109,11 +114,12 @@ var OrderRightSide = function OrderRightSide(props) {
 
 var OrderItemList = function OrderItemList(props) {
   var order = props.order;
-  var orderItemsProps = props.orderItems;
+  var orderItemsProps = props.orderItems || [];
   var orderItemsVnodes = [];
 
   for (var i = 0; i < orderItemsProps.length; i++) {
-    orderItemsVnodes.push(vNode(OrderListItem, {
+    orderItemsVnodes.push(vNode(OrderItem, {
+      order: order,
       orderItem: orderItemsProps[i]
     }));
   }
@@ -147,14 +153,19 @@ var OrderItemList = function OrderItemList(props) {
   }, "Sub Total")), orderItemsVnodes);
 };
 
-var OrderListItem = function OrderListItem(props) {
-  var orderItem = props.orderItem; //Id, Product2Id, Product2.Name, UnitPrice, Quantity, TotalPrice
+var OrderItem = function OrderItem(props) {
+  var orderItem = props.orderItem;
+  var order = props.order; //console.log("d");
+  //console.log(props);
+  //console.log(orderItem);
+  //console.log(order[0].Id);
+  //Id, Product2Id, Product2.Name, UnitPrice, Quantity, TotalPrice
 
   var tableContact = "NA";
   var tableExpiry = "NA";
   var tableProduct = "NA";
   var tableDiscription = "NA";
-  var tablnNote1 = "NA";
+  var tableNote1 = "NA";
   var tableNote2 = "NA";
   var tableNote3 = "NA";
   var tableUnitPrice = "NA";
@@ -179,8 +190,47 @@ var OrderListItem = function OrderListItem(props) {
     tableSubtotal = orderItem.TotalPrice;
   }
 
+  if (orderItem.Note_1__c) {
+    tableNote1 = orderItem.Note_1__c;
+  }
+
+  if (orderItem.Note_2__c) {
+    tableNote2 = orderItem.Note_2__c;
+  }
+
+  if (orderItem.Note_3__c) {
+    tableNote3 = orderItem.Note_3__c;
+  }
+
+  if (orderItem.FirstName__c) {
+    if (orderItem.LastName__c) {
+      tableContact = orderItem.FirstName__c + " " + orderItem.LastName__c;
+    } else {
+      tableContact = orderItem.FirstName__c;
+    }
+  } else {
+    if (orderItem.LastName__c) {
+      tableContact = orderItem.LastName__c;
+    }
+  }
+
+  if (orderItem.ExpirationDate__c) {
+    tableExpiry = orderItem.ExpirationDate__c;
+  }
+
+  var fn = function fn(e) {
+    e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.recordId && e.currentTarget.dataset.orderitemId;
+    e.frameworkDetail = e.currentTarget.dataset;
+    e.action = e.currentTarget.dataset.action;
+  };
+
   return vNode("ul", {
-    "class": "table-row"
+    "class": "table-row",
+    Id: orderItem.Id,
+    onchange: fn,
+    "data-orderitem-id": order[0].Id,
+    "data-record-id": orderItem.Id,
+    "data-action": "save-order-item"
   }, vNode("li", {
     "class": "order-actions table-cell"
   }, vNode("a", {
@@ -189,6 +239,7 @@ var OrderListItem = function OrderListItem(props) {
   }, "remove")), vNode("li", {
     "class": "order-contact table-cell"
   }, vNode("input", {
+    "class": "orderOnChange orderItemData contact",
     type: "text",
     id: "contact",
     value: tableContact,
@@ -197,6 +248,7 @@ var OrderListItem = function OrderListItem(props) {
   })), vNode("li", {
     "class": "order-experation table-cell"
   }, vNode("input", {
+    "class": "orderOnChange orderItemData expiration",
     type: "text",
     id: "experation",
     value: tableExpiry,
@@ -204,6 +256,7 @@ var OrderListItem = function OrderListItem(props) {
   })), vNode("li", {
     "class": "order-product table-cell"
   }, vNode("input", {
+    "class": "orderOnChange orderItemData product",
     type: "text",
     id: "product",
     value: tableProduct,
@@ -212,6 +265,7 @@ var OrderListItem = function OrderListItem(props) {
   })), vNode("li", {
     "class": "order-description table-cell"
   }, vNode("input", {
+    "class": "orderOnChange orderItemData description",
     type: "text",
     id: "discription",
     value: tableDiscription,
@@ -219,13 +273,15 @@ var OrderListItem = function OrderListItem(props) {
   })), vNode("li", {
     "class": "order-note1 table-cell"
   }, vNode("input", {
+    "class": "orderOnChange orderItemData note1",
     type: "text",
     id: "note1",
-    value: tablnNote1,
+    value: tableNote1,
     maxlength: "300"
   })), vNode("li", {
     "class": "order-note2 table-cell"
   }, vNode("input", {
+    "class": "orderOnChange orderItemData note2",
     type: "text",
     id: "note2",
     value: tableNote2,
@@ -233,6 +289,7 @@ var OrderListItem = function OrderListItem(props) {
   })), vNode("li", {
     "class": "order-note3 table-cell"
   }, vNode("input", {
+    "class": "orderOnChange orderItemData note3",
     type: "text",
     id: "note3",
     value: tableNote3,
@@ -240,6 +297,7 @@ var OrderListItem = function OrderListItem(props) {
   })), vNode("li", {
     "class": "order-unitprice table-cell"
   }, vNode("input", {
+    "class": "orderOnChange orderItemData unitprice",
     type: "text",
     id: "unitprice",
     value: tableUnitPrice,
@@ -248,6 +306,7 @@ var OrderListItem = function OrderListItem(props) {
   })), vNode("li", {
     "class": "order-quantity table-cell"
   }, vNode("input", {
+    "class": "orderOnChange orderItemData quantity",
     type: "number",
     id: "quantity",
     value: tableQuantity,
@@ -256,6 +315,7 @@ var OrderListItem = function OrderListItem(props) {
   })), vNode("li", {
     "class": "order-subtotal table-cell"
   }, vNode("input", {
+    "class": "orderOnChange orderItemData subtotal",
     type: "number",
     id: "subtotal",
     value: tableSubtotal,
@@ -394,7 +454,7 @@ var Attendee = function Attendee(props) {
   }, ((_contact$Contact__r$M = contact.Contact__r.MailingCity) !== null && _contact$Contact__r$M !== void 0 ? _contact$Contact__r$M : ' ') + stateFormatter(contact.Contact__r.MailingState)));
 };
 
-var OrderBotFull = function OrderBotFull(props) {
+var LargeOrderList = function LargeOrderList(props) {
   return vNode("div", {
     id: "bottomscreen",
     style: "clear:both"
