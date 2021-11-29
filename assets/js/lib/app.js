@@ -4,7 +4,8 @@ import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.j
 import { cityFormatter, stateFormatter, createMemberX } from './contactFieldFormat.js';
 import { getOrders, getOrder, getEventDetails, getRegistrants, getCountRegistrants } from './data.js';
 import { HomeFullNode } from './components.js';
-import { switchOrder, saveOrderItem } from './events.js';
+import { switchOrder } from './events.js';
+import { saveOrderItem, setUpAutoComplete } from './savedata.js';
 
 function init() {
   // Probably change to document.querySelector().

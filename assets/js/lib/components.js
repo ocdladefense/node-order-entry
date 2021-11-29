@@ -8,6 +8,7 @@ This is our list of components to be used in the app.
 export { HomeFullNode, OrderItems };
 import { vNode } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
+import { switchOrder } from './events.js';
 
 var HomeFullNode = function HomeFullNode(props) {
   return vNode("div", null, vNode(OrderDetailsSection, {
@@ -80,10 +81,7 @@ var OrderListOrder = function OrderListOrder(props) {
 
 var OrderItems = function OrderItems(props) {
   var order = props.order;
-  var orderItems = props.orderItems; //console.log(order);
-  //console.log(orderItems);
-  //let fn = function(e) {
-  //    console.log("ds");
+  var orderItems = props.orderItems; //let fn = function(e) {
   //    e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.orderId;
   //    e.frameworkDetail = [e.frameworkDetail, e.orderId];
   //};
@@ -96,7 +94,6 @@ var OrderItems = function OrderItems(props) {
   if (order) {
     order = props.order[0];
     var contactName = "NA"; //order.BillToContact ? props.order.BillToContact.Name : "NA";
-    //console.log(order.BillToContact.Name);
 
     if (order.BillToContact) {
       contactName = order.BillToContact.Name;
@@ -155,15 +152,13 @@ var OrderItemList = function OrderItemList(props) {
 
 var OrderItem = function OrderItem(props) {
   var orderItem = props.orderItem;
-  var order = props.order; //console.log("d");
-  //console.log(props);
-  //console.log(orderItem);
-  //console.log(order[0].Id);
-  //Id, Product2Id, Product2.Name, UnitPrice, Quantity, TotalPrice
+  var order = props.order; //Id, Product2Id, Product2.Name, UnitPrice, Quantity, TotalPrice
 
   var tableContact = "NA";
+  var tableContactId = "0030a00001V0uTWAAZ";
   var tableExpiry = "NA";
   var tableProduct = "NA";
+  var tableProductId = "01t0a000004Ov6bAAC";
   var tableDiscription = "NA";
   var tableNote1 = "NA";
   var tableNote2 = "NA";
@@ -222,10 +217,11 @@ var OrderItem = function OrderItem(props) {
     e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.recordId && e.currentTarget.dataset.orderitemId;
     e.frameworkDetail = e.currentTarget.dataset;
     e.action = e.currentTarget.dataset.action;
-  };
+  }; //fix the bellow id field so that the id isnt also in the class
+
 
   return vNode("ul", {
-    "class": "table-row",
+    "class": "table-row autocomplete id-" + orderItem.Id,
     Id: orderItem.Id,
     onchange: fn,
     "data-orderitem-id": order[0].Id,
@@ -241,10 +237,16 @@ var OrderItem = function OrderItem(props) {
   }, vNode("input", {
     "class": "orderOnChange orderItemData contact",
     type: "text",
+    autocomplete: "off",
     id: "contact",
     value: tableContact,
     required: true,
     maxlength: "100"
+  }), vNode("input", {
+    "class": "orderOnChange orderItemData contactId",
+    type: "hidden",
+    id: "contactId",
+    value: tableContactId
   })), vNode("li", {
     "class": "order-experation table-cell"
   }, vNode("input", {
@@ -258,10 +260,16 @@ var OrderItem = function OrderItem(props) {
   }, vNode("input", {
     "class": "orderOnChange orderItemData product",
     type: "text",
+    autocomplete: "off",
     id: "product",
     value: tableProduct,
     required: true,
     maxlength: "100"
+  }), vNode("input", {
+    "class": "orderOnChange orderItemData productId",
+    type: "hidden",
+    id: "productId",
+    value: tableProductId
   })), vNode("li", {
     "class": "order-description table-cell"
   }, vNode("input", {

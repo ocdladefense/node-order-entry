@@ -16,7 +16,7 @@ import { vNode } from '../../../node_modules/@ocdladefense/view/view.js';
 
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
 
-
+import { switchOrder } from './events.js';
 
 
 const HomeFullNode = function(props) {
@@ -89,11 +89,8 @@ const OrderItems = function(props) {
 
     let orderItems = props.orderItems;
 
-    //console.log(order);
-    //console.log(orderItems);
 
     //let fn = function(e) {
-    //    console.log("ds");
     //    e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.orderId;
     //    e.frameworkDetail = [e.frameworkDetail, e.orderId];
     //};
@@ -103,7 +100,6 @@ const OrderItems = function(props) {
     if (order) {
         order = props.order[0];
         let contactName = "NA";//order.BillToContact ? props.order.BillToContact.Name : "NA";
-        //console.log(order.BillToContact.Name);
         if (order.BillToContact) {
             contactName = order.BillToContact.Name;
         }
@@ -140,6 +136,7 @@ const OrderItemList = function(props) {
     let orderItemsVnodes = [];
     for (let i = 0; i < orderItemsProps.length; i++) {
         orderItemsVnodes.push(<OrderItem order={order} orderItem={orderItemsProps[i]} />);
+        
     }
 
     return (
@@ -167,15 +164,13 @@ const OrderItem = function(props) {
     let orderItem = props.orderItem;
     let order = props.order;
 
-    //console.log("d");
-    //console.log(props);
-    //console.log(orderItem);
-    //console.log(order[0].Id);
 
     //Id, Product2Id, Product2.Name, UnitPrice, Quantity, TotalPrice
     let tableContact = "NA";
+    let tableContactId = "0030a00001V0uTWAAZ";
     let tableExpiry = "NA";
     let tableProduct = "NA";
+    let tableProductId = "01t0a000004Ov6bAAC";
     let tableDiscription = "NA";
     let tableNote1 = "NA";
     let tableNote2 = "NA";
@@ -230,13 +225,14 @@ const OrderItem = function(props) {
         e.frameworkDetail = e.currentTarget.dataset;
         e.action = e.currentTarget.dataset.action;
     };
-    
+
+    //fix the bellow id field so that the id isnt also in the class
     return (
-        <ul class="table-row" Id={orderItem.Id} onchange={fn} data-orderitem-id={order[0].Id} data-record-id={orderItem.Id} data-action="save-order-item">
+        <ul class={"table-row autocomplete id-" + orderItem.Id} Id={orderItem.Id} onchange={fn} data-orderitem-id={order[0].Id} data-record-id={orderItem.Id} data-action="save-order-item">
             <li class="order-actions table-cell"><a target="_blank" class="marginMaker2">remove</a></li>
-            <li class="order-contact table-cell"><input class="orderOnChange orderItemData contact" type="text" id="contact" value={tableContact} required maxlength="100" /></li>
+            <li class="order-contact table-cell"><input class="orderOnChange orderItemData contact" type="text" autocomplete="off" id="contact" value={tableContact} required maxlength="100" /><input class="orderOnChange orderItemData contactId" type="hidden" id="contactId" value={tableContactId} /></li>
             <li class="order-experation table-cell"><input class="orderOnChange orderItemData expiration" type="text" id="experation" value={tableExpiry} maxlength="100" /></li>
-            <li class="order-product table-cell"><input class="orderOnChange orderItemData product" type="text" id="product" value={tableProduct} required maxlength="100" /></li>
+            <li class="order-product table-cell"><input class="orderOnChange orderItemData product" type="text" autocomplete="off" id="product" value={tableProduct} required maxlength="100" /><input class="orderOnChange orderItemData productId" type="hidden" id="productId" value={tableProductId} /></li>
             <li class="order-description table-cell"><input class="orderOnChange orderItemData description" type="text" id="discription" value={tableDiscription} maxlength="100" /></li>
             <li class="order-note1 table-cell"><input class="orderOnChange orderItemData note1" type="text" id="note1" value={tableNote1} maxlength="300" /></li>
             <li class="order-note2 table-cell"><input class="orderOnChange orderItemData note2" type="text" id="note2" value={tableNote2} maxlength="300" /></li>

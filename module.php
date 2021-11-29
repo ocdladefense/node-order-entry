@@ -56,6 +56,26 @@ class ExampleModule extends Module {
 		return $records;
 }
 
+	/*public function getContact() {
+		$api = $this->loadForceApi();
+
+		$results = $api->query("SELECT Contact__r.Name, Id FROM Event__c WHERE Id = '$eventId'");
+
+		$records = $results->getRecords();
+		
+		return $records[0];
+	}
+
+	public function jsonContactListFunction($eventId) {
+        $api = $this->loadForceApi();
+
+		$results = $api->query("SELECT Product2.Name, Contact__r.Ocdla_Current_Member_Flag__c, Order.EffectiveDate, Contact__r.Name, Contact__r.MailingState, Contact__r.MailingCity FROM OrderItem WHERE OrderItem.Product2.Event__c = '$eventId'");
+
+		$records = $results->getRecords();
+		
+		return $records;
+    }*/
+
 
 
 

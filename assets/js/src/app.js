@@ -11,7 +11,8 @@ import { getOrders, getOrder, getEventDetails, getRegistrants, getCountRegistran
 
 import { HomeFullNode } from './components.js';
 
-import { switchOrder, saveOrderItem } from './events.js';
+import { switchOrder } from './events.js';
+import { saveOrderItem, setUpAutoComplete } from './savedata.js';
 
 
 
