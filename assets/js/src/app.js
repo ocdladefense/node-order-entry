@@ -7,7 +7,7 @@ import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.j
 
 import { cityFormatter, stateFormatter, createMemberX } from './contactFieldFormat.js';
 
-import { getOrders, getOrder, getEventDetails, getRegistrants, getCountRegistrants } from './data.js';
+import { getOrders, getOrderById, getOrderItems } from './data.js';
 
 import { HomeFullNode } from './components.js';
 
@@ -35,6 +35,7 @@ function init() {
 
     document.addEventListener("click", myAppEventHandler);
     document.addEventListener("change", myAppEventHandler);
+    
 }
 
 /*
@@ -47,8 +48,10 @@ addEvent("search", function() {
 });
 addEvent("list", switchToList);
 */
-addEvent("load-order", switchOrder);
-addEvent("save-order-item", saveOrderItem);
+addEvent("loadorder", switchOrder, setUpAutoComplete);//document.add-event-listener(load-order)
+addEvent("save-order-item", saveOrderItem, function() {
+    setUpAutoComplete();
+});
 
 
 domReady(init);

@@ -62,7 +62,7 @@ var OrderListOrder = function OrderListOrder(props) {
   classString = classString + " orderbox-highlights";
   return vNode("div", {
     "class": "orderClick orderItem",
-    "data-action": "load-order",
+    "data-action": "loadorder",
     onclick: fn,
     href: "#" + props.order.Id,
     "data-record-id": props.order.Id

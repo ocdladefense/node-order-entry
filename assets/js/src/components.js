@@ -9,7 +9,7 @@ This is our list of components to be used in the app.
 
 
 
-export { HomeFullNode, OrderItems };
+export { HomeFullNode, OrderItems, OrderItem };
 
 
 import { vNode } from '../../../node_modules/@ocdladefense/view/view.js';
@@ -68,7 +68,7 @@ const OrderListOrder = function(props) {
     classString = classString + " orderbox-highlights"
     
     return (
-        <div class="orderClick orderItem" data-action="load-order" onclick={fn} href={"#" + props.order.Id} data-record-id={props.order.Id} >
+        <div class="orderClick orderItem" data-action="loadorder" onclick={fn} href={"#" + props.order.Id} data-record-id={props.order.Id} >
             <div class={classString}>
                 <div class="listOrderId">{props.order.OrderNumber}</div>
                 <div class="listOrderDate">{props.order.EffectiveDate}</div>

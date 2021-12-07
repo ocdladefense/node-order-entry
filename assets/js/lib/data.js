@@ -1,4 +1,4 @@
-export { getOrders, getOrder, getSingleOrder, getEventDetails, getRegistrants, getCountRegistrants };
+export { getOrders, getOrderById, getOrderItems, getEventDetails, getRegistrants, getCountRegistrants };
 
 function getOrders() {
   return fetch("/orderentry/orders").then(function (resp) {
@@ -8,16 +8,16 @@ function getOrders() {
   });
 }
 
-function getOrder(Id) {
-  return fetch("/orderentry/orderitems/" + Id).then(function (resp) {
+function getOrderById(Id) {
+  return fetch("/orderentry/singleorder/" + Id).then(function (resp) {
     return resp.json();
   }).then(function (data) {
     return data;
   });
 }
 
-function getSingleOrder(Id) {
-  return fetch("/orderentry/singleorder/" + Id).then(function (resp) {
+function getOrderItems(Id) {
+  return fetch("/orderentry/orderitems/" + Id).then(function (resp) {
     return resp.json();
   }).then(function (data) {
     return data;

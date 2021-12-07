@@ -7,34 +7,42 @@ import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.j
 
 
 import { OrderItems, HomeFullNode }  from './components.js';
-import { getOrders, getOrder, getSingleOrder } from './data.js';
+import { getOrders, getOrderById, getOrderItems } from './data.js';
+
 
 
 function saveOrderItem(props) {
+    console.log("called save");
     //extract, autofill, validateBeforeSave, save
     //{"orderId":order.Id, "orderItem":orderItem.Id}
     let obj = extractOrderItemData(props.recordId);
     obj = autofill(obj);
     if (validateBeforeSave(obj)) {
         save(obj)
-            .then(updateElement)
+            //.then(updateElement)
             .catch(function (e) {console.log("error message " + e);});
     }
-
-
-    let orderItems = getOrder(props.orderitemId);
-    let singleOrder = getSingleOrder(props.orderitemId);
-    let theList = getOrders();
-    let HomeFullNodeHolder;
     
+
+    let theList = getOrders();
+    let singleOrder = getOrderById(props.orderitemId);
+    let orderItems = getOrderItems(props.orderitemId);
+    let HomeFullNodeHolder;
+    let OrderItemHolder;
+
+
     return Promise.all([orderItems, theList, singleOrder]).then(function(data) {
         console.log("promise finished");
 
-        HomeFullNodeHolder = <HomeFullNode orders={data[1]} order={data[2]} orderItems={data[0]} />;
-        console.log(HomeFullNodeHolder);
-        return HomeFullNodeHolder;
+        //HomeFullNodeHolder = <HomeFullNode orders={data[1]} order={data[2]} orderItems={data[0]} />;
+        //console.log(HomeFullNodeHolder);
+        OrderItemHolder = <OrderItem orders={"s"} orderItems={"d"} />;
+
+        return OrderItemHolder;
         //return <OrderItems orders={data[1]} order={data[2]} orderItems={data[0]} />;
-    }).then(setUpAutoComplete());
+    });
+
+
 }
 //Id, Product2Id, Note_1__c, Note_2__c, Note_3__c, FirstName__c, LastName__c, ExpirationDate__c, Product2.Name, UnitPrice, Quantity, TotalPrice FROM OrderItem WHERE OrderId = '$Id'"
 
@@ -101,17 +109,23 @@ var productNames = ["Looma", "foobar", "new york times"];
 
 //var currentIds = [];
 
+
+
 function setUpAutoComplete() {
-    //console.log("auto");
+    console.log("auto");
     //await new Promise(r => setTimeout(r, 1000)); //a promise . then would probably be better
     let arrayOfElements = document.getElementsByClassName("autocomplete");
+    //console.log(arrayOfElements);
 
 
+    
     for (let i = 0; i < arrayOfElements.length; i++) {
-        let mainElementId = arrayOfElements[0].id;
+        let mainElementId = arrayOfElements.item(i).id;
         
         let mainElementContact = document.querySelector(".id-" + mainElementId + " .order-contact .contact");
         let mainElementProduct = document.querySelector(".id-" + mainElementId + " .order-product .product");
+
+        //console.log(mainElementContact);
 
         autocomplete(mainElementContact, contactNames);
         autocomplete(mainElementProduct, productNames);

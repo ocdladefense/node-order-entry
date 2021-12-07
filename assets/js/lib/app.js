@@ -2,7 +2,7 @@
 import { vNode, addEvent, getMainContainer, changeMainContainer, myAppEventHandler, render } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
 import { cityFormatter, stateFormatter, createMemberX } from './contactFieldFormat.js';
-import { getOrders, getOrder, getEventDetails, getRegistrants, getCountRegistrants } from './data.js';
+import { getOrders, getOrderById, getOrderItems } from './data.js';
 import { HomeFullNode } from './components.js';
 import { switchOrder } from './events.js';
 import { saveOrderItem, setUpAutoComplete } from './savedata.js';
@@ -35,6 +35,9 @@ addEvent("list", switchToList);
 */
 
 
-addEvent("load-order", switchOrder);
-addEvent("save-order-item", saveOrderItem);
+addEvent("loadorder", switchOrder, setUpAutoComplete); //document.add-event-listener(load-order)
+
+addEvent("save-order-item", saveOrderItem, function () {
+  setUpAutoComplete();
+});
 domReady(init);

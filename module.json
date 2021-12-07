@@ -14,12 +14,12 @@
         "callback":"getOrders",
         "content-type":"application/json"
      },
+     "orderentry/singleorder/%id":{
+        "callback":"getOrderById",
+        "content-type":"application/json"
+     },
      "orderentry/orderitems/%id":{
       "callback":"getOrderItems",
-      "content-type":"application/json"
-   },
-   "orderentry/singleorder/%id":{
-      "callback":"getSingleOrder",
       "content-type":"application/json"
    },
       "example/details/%id":{

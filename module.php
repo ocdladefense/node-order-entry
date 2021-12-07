@@ -27,19 +27,19 @@ class ExampleModule extends Module {
 
 
     public function getOrders() {
-			$api = $this->loadForceApi();
-
-			$results = $api->query("SELECT Id, EffectiveDate, BillToContact.Name, Status, OrderNumber, TotalAmount FROM Order Order By EffectiveDate DESC LIMIT 25");
-
-			$records = $results->getRecords();
-		
-			return $records;
-    }
-
-	public function getSingleOrder($Id) {
 		$api = $this->loadForceApi();
 
-		$results = $api->query("SELECT Id, EffectiveDate, BillToContact.Name, Status, OrderNumber, TotalAmount FROM Order  WHERE Id = '$Id'");
+		$results = $api->query("SELECT Id, EffectiveDate, BillToContact.Name, Status, OrderNumber, TotalAmount FROM Order Order By EffectiveDate DESC LIMIT 25");
+
+		$records = $results->getRecords();
+	
+		return $records;
+    }
+
+	public function getOrderById($Id) {
+		$api = $this->loadForceApi();
+
+		$results = $api->query("SELECT Id, EffectiveDate, BillToContact.Name, Status, OrderNumber, TotalAmount FROM Order WHERE Id = '$Id'");
 
 		$records = $results->getRecords();
 	
@@ -56,7 +56,7 @@ class ExampleModule extends Module {
 		return $records;
 }
 
-	/*public function getContact() {
+	public function getContacts() {
 		$api = $this->loadForceApi();
 
 		$results = $api->query("SELECT Contact__r.Name, Id FROM Event__c WHERE Id = '$eventId'");
@@ -74,7 +74,7 @@ class ExampleModule extends Module {
 		$records = $results->getRecords();
 		
 		return $records;
-    }*/
+    }
 
 
 
