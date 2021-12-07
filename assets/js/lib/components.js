@@ -5,7 +5,7 @@
 This is our list of components to be used in the app.
 
 **/
-export { HomeFullNode, OrderItems };
+export { HomeFullNode, OrderItems, OrderItem };
 import { vNode } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
 import { switchOrder } from './events.js';

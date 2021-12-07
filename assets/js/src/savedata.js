@@ -31,19 +31,23 @@ function saveOrderItem(props) {
     let OrderItemHolder;
 
 
-    return Promise.all([orderItems, theList, singleOrder]).then(function(data) {
-        console.log("promise finished");
+    fillOrderItemData(obj);
+
+    //return Promise.resolve();
+    //return Promise.all([orderItems, theList, singleOrder]).then(function(data) {
+        //console.log("promise finished");
 
         //HomeFullNodeHolder = <HomeFullNode orders={data[1]} order={data[2]} orderItems={data[0]} />;
         //console.log(HomeFullNodeHolder);
-        OrderItemHolder = <OrderItem orders={"s"} orderItems={"d"} />;
+        //OrderItemHolder = <OrderItem orders={"s"} orderItems={"d"} />;
 
-        return OrderItemHolder;
+        //return OrderItemHolder;
         //return <OrderItems orders={data[1]} order={data[2]} orderItems={data[0]} />;
-    });
-
+  //});
 
 }
+
+
 //Id, Product2Id, Note_1__c, Note_2__c, Note_3__c, FirstName__c, LastName__c, ExpirationDate__c, Product2.Name, UnitPrice, Quantity, TotalPrice FROM OrderItem WHERE OrderId = '$Id'"
 
 function extractOrderItemData(recordId) {
@@ -74,6 +78,26 @@ function extractOrderItemData(recordId) {
     let subtotalValue = subtotal.value;
 
     return {"Id":recordId, "Product2Id":productId, "Contact__c":contactId, "Description":descriptionValue, "Note_1__c":note1Value, "Note_2__c":note2Value, "Note_3__c":note3Value, "ExpirationDate__c":expirationValue, "Product2Name":productValue, "UnitPrice":unitpriceValue, "Quantity":quantityValue, "TotalPrice":subtotalValue};
+}
+
+function fillOrderItemData(obj) {
+  //{"Id":recordId, "Product2Id":productId, "Contact__c":contactId, "Description":descriptionValue, "Note_1__c":note1Value, "Note_2__c":note2Value, "Note_3__c":note3Value, "ExpirationDate__c":expirationValue, "Product2Name":productValue, "UnitPrice":unitpriceValue, "Quantity":quantityValue, "TotalPrice":subtotalValue};
+  console.log(obj["Id"]);
+  
+  let row = document.getElementById(obj["Id"]);
+
+  row.getElementsByClassName("contact")[0].value = obj["Id"];//would get their name based off the id simular to product field, using the names array
+
+  row.getElementsByClassName("expiration")[0].value = obj["ExpirationDate__c"];
+  row.getElementsByClassName("product")[0].value = obj["Product2Name"];
+  row.getElementsByClassName("description")[0].value = obj["Description"];
+  row.getElementsByClassName("note1")[0].value = obj["Note_1__c"];
+  row.getElementsByClassName("note2")[0].value = obj["Note_2__c"];
+  row.getElementsByClassName("note3")[0].value = obj["Note_3__c"];
+  row.getElementsByClassName("unitprice")[0].value = obj["UnitPrice"];
+  row.getElementsByClassName("quantity")[0].value = obj["Quantity"];
+  row.getElementsByClassName("subtotal")[0].value = obj["TotalPrice"];
+
 }
 
 function autofill(obj) {
