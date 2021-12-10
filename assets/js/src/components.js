@@ -9,7 +9,7 @@ This is our list of components to be used in the app.
 
 
 
-export { HomeFullNode, OrderItems, OrderItem };
+export { HomeFullNode, OrderItems, OrderItem, SmallOrderList, LargeOrderList };
 
 
 import { vNode } from '../../../node_modules/@ocdladefense/view/view.js';
@@ -23,16 +23,20 @@ const HomeFullNode = function(props) {
     return(
         <div>
             <OrderDetailsSection orders={props.orders} order={props.order} orderItems={props.orderItems} /> 
-            <LargeOrderList orders={props.orders} />
+            <div id="bottomListOrders">
+                <LargeOrderList orders={props.orders} />
+            </div>
         </div>
     )
 };
 
 const OrderDetailsSection = function(props) {
     return(
-        <div id="topscreen" style="width: 100%;">
-            <SmallOrderList orders={props.orders} /> 
-            <OrderItems orders={props.orders} order={props.order} orderItems={props.orderItems} />
+        <div>
+            <div id="topscreen" style="width: 100%;">
+                <SmallOrderList orders={props.orders} /> 
+                <OrderItems orders={props.orders} order={props.order} orderItems={props.orderItems} />
+            </div>
         </div>
     )
 };
@@ -140,7 +144,7 @@ const OrderItemList = function(props) {
     }
 
     return (
-        <div style="width:70%; float:left;">
+        <div style="width:70%; float:left;" id="listOfOrderItems">
             <ul class="table-row table-headers">
                 <li class="table-cell">Actions</li>
                 <li class="table-cell">Contact</li>
@@ -383,8 +387,18 @@ const Attendee = function(props) {
 
 
 const LargeOrderList = function(props) {
+    let orders = props.orders;
+
+    let list = [];
+    for (let i = 0; i < orders.length; i++) {
+        list.push(<OrderListOrder order={orders[i]} />);
+    }
+
     return(
         <div id="bottomscreen" style="clear:both">
+            <div class="orderList">
+                {list}
+            </div>
         </div>
     )
 };

@@ -1,6 +1,6 @@
 /** @jsx vNode */
 export { switchOrder };
-import { vNode, updateElement } from '../../../node_modules/@ocdladefense/view/view.js';
+import { vNode, updateElement, changeMainContainer } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
 import { OrderItems, HomeFullNode } from './components.js';
 import { getOrders, getOrderById, getOrderItems } from './data.js';
@@ -8,6 +8,7 @@ import { saveOrderItem, setUpAutoComplete } from './savedata.js';
 
 function switchOrder(props) {
   //render just the right side, not everything
+  changeMainContainer("main");
   var theList = getOrders();
   var singleOrder = getOrderById(props.recordId);
   var orderItems = getOrderItems(props.recordId);

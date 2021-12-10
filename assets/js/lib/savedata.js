@@ -1,8 +1,8 @@
 /** @jsx vNode */
 export { saveOrderItem, setUpAutoComplete };
-import { vNode, updateElement } from '../../../node_modules/@ocdladefense/view/view.js';
+import { vNode, updateElement, changeMainContainer } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
-import { OrderItems, HomeFullNode } from './components.js';
+import { OrderItems, HomeFullNode, SmallOrderList, OrderItem, LargeOrderList } from './components.js';
 import { getOrders, getOrderById, getOrderItems } from './data.js';
 
 function saveOrderItem(props) {
@@ -19,20 +19,25 @@ function saveOrderItem(props) {
     });
   }
 
+  changeMainContainer("bottomListOrders");
   var theList = getOrders();
   var singleOrder = getOrderById(props.orderitemId);
   var orderItems = getOrderItems(props.orderitemId);
   var HomeFullNodeHolder;
   var OrderItemHolder;
   fillOrderItemData(obj); //return Promise.resolve();
-  //return Promise.all([orderItems, theList, singleOrder]).then(function(data) {
-  //console.log("promise finished");
-  //HomeFullNodeHolder = <HomeFullNode orders={data[1]} order={data[2]} orderItems={data[0]} />;
-  //console.log(HomeFullNodeHolder);
-  //OrderItemHolder = <OrderItem orders={"s"} orderItems={"d"} />;
-  //return OrderItemHolder;
-  //return <OrderItems orders={data[1]} order={data[2]} orderItems={data[0]} />;
-  //});
+
+  return Promise.all([theList, singleOrder, orderItems]).then(function (data) {
+    //console.log("promise finished"); //This stuff is just to resolve an empty promise error
+    //return <SmallOrderList orders={theList} />;
+    //HomeFullNodeHolder = <HomeFullNode orders={data[0]} order={data[1]} orderItems={data[2]} />;
+    //console.log(HomeFullNodeHolder);
+    //OrderItemHolder = <OrderItem order={data[1]} orderItem={obj} />;
+    return vNode(LargeOrderList, {
+      orders: data[0]
+    }); //return HomeFullNodeHolder;
+    //return <OrderItems orders={data[1]} order={data[2]} orderItems={data[0]} />;
+  });
 } //Id, Product2Id, Note_1__c, Note_2__c, Note_3__c, FirstName__c, LastName__c, ExpirationDate__c, Product2.Name, UnitPrice, Quantity, TotalPrice FROM OrderItem WHERE OrderId = '$Id'"
 
 

@@ -5,7 +5,7 @@
 This is our list of components to be used in the app.
 
 **/
-export { HomeFullNode, OrderItems, OrderItem };
+export { HomeFullNode, OrderItems, OrderItem, SmallOrderList, LargeOrderList };
 import { vNode } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
 import { switchOrder } from './events.js';
@@ -15,13 +15,15 @@ var HomeFullNode = function HomeFullNode(props) {
     orders: props.orders,
     order: props.order,
     orderItems: props.orderItems
-  }), vNode(LargeOrderList, {
+  }), vNode("div", {
+    id: "bottomListOrders"
+  }, vNode(LargeOrderList, {
     orders: props.orders
-  }));
+  })));
 };
 
 var OrderDetailsSection = function OrderDetailsSection(props) {
-  return vNode("div", {
+  return vNode("div", null, vNode("div", {
     id: "topscreen",
     style: "width: 100%;"
   }, vNode(SmallOrderList, {
@@ -30,7 +32,7 @@ var OrderDetailsSection = function OrderDetailsSection(props) {
     orders: props.orders,
     order: props.order,
     orderItems: props.orderItems
-  }));
+  })));
 };
 
 var SmallOrderList = function SmallOrderList(props) {
@@ -122,7 +124,8 @@ var OrderItemList = function OrderItemList(props) {
   }
 
   return vNode("div", {
-    style: "width:70%; float:left;"
+    style: "width:70%; float:left;",
+    id: "listOfOrderItems"
   }, vNode("ul", {
     "class": "table-row table-headers"
   }, vNode("li", {
@@ -463,8 +466,19 @@ var Attendee = function Attendee(props) {
 };
 
 var LargeOrderList = function LargeOrderList(props) {
+  var orders = props.orders;
+  var list = [];
+
+  for (var i = 0; i < orders.length; i++) {
+    list.push(vNode(OrderListOrder, {
+      order: orders[i]
+    }));
+  }
+
   return vNode("div", {
     id: "bottomscreen",
     style: "clear:both"
-  });
+  }, vNode("div", {
+    "class": "orderList"
+  }, list));
 };

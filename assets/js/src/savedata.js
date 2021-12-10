@@ -2,11 +2,11 @@
 
 export { saveOrderItem, setUpAutoComplete };
 
-import { vNode, updateElement } from '../../../node_modules/@ocdladefense/view/view.js';
+import { vNode, updateElement, changeMainContainer } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
 
 
-import { OrderItems, HomeFullNode }  from './components.js';
+import { OrderItems, HomeFullNode, SmallOrderList, OrderItem, LargeOrderList }  from './components.js';
 import { getOrders, getOrderById, getOrderItems } from './data.js';
 
 
@@ -23,6 +23,7 @@ function saveOrderItem(props) {
             .catch(function (e) {console.log("error message " + e);});
     }
     
+    changeMainContainer("bottomListOrders");
 
     let theList = getOrders();
     let singleOrder = getOrderById(props.orderitemId);
@@ -34,16 +35,17 @@ function saveOrderItem(props) {
     fillOrderItemData(obj);
 
     //return Promise.resolve();
-    //return Promise.all([orderItems, theList, singleOrder]).then(function(data) {
-        //console.log("promise finished");
-
-        //HomeFullNodeHolder = <HomeFullNode orders={data[1]} order={data[2]} orderItems={data[0]} />;
+    return Promise.all([theList, singleOrder, orderItems]).then(function(data) {
+        //console.log("promise finished"); //This stuff is just to resolve an empty promise error
+        //return <SmallOrderList orders={theList} />;
+        //HomeFullNodeHolder = <HomeFullNode orders={data[0]} order={data[1]} orderItems={data[2]} />;
         //console.log(HomeFullNodeHolder);
-        //OrderItemHolder = <OrderItem orders={"s"} orderItems={"d"} />;
+        //OrderItemHolder = <OrderItem order={data[1]} orderItem={obj} />;
 
-        //return OrderItemHolder;
+        return <LargeOrderList orders={data[0]} />;
+        //return HomeFullNodeHolder;
         //return <OrderItems orders={data[1]} order={data[2]} orderItems={data[0]} />;
-  //});
+    });
 
 }
 
