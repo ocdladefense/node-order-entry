@@ -47,6 +47,7 @@ function extractOrderItemData(recordId) {
   var contactId = "0030a00001V0uTWAAZ"; //Elijah R.L. Brown
 
   var productId = "01t0a000004Ov6bAAC"; //CLE Archive: 2015 House Bill 2320 (Package)
+  //only gets the first one?
 
   var expiration = row.getElementsByClassName("expiration")[0];
   var product = row.getElementsByClassName("product")[0];

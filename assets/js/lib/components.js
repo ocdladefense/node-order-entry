@@ -126,31 +126,7 @@ var OrderItemList = function OrderItemList(props) {
   return vNode("div", {
     style: "width:70%; float:left;",
     id: "listOfOrderItems"
-  }, vNode("ul", {
-    "class": "table-row table-headers"
-  }, vNode("li", {
-    "class": "table-cell"
-  }, "Actions"), vNode("li", {
-    "class": "table-cell"
-  }, "Contact"), vNode("li", {
-    "class": "table-cell"
-  }, "Experation"), vNode("li", {
-    "class": "table-cell"
-  }, "Product"), vNode("li", {
-    "class": "table-cell"
-  }, "Line Descritpion"), vNode("li", {
-    "class": "table-cell"
-  }, "Note 1"), vNode("li", {
-    "class": "table-cell"
-  }, "Note 2"), vNode("li", {
-    "class": "table-cell"
-  }, "Note 3"), vNode("li", {
-    "class": "table-cell"
-  }, "Unit Price"), vNode("li", {
-    "class": "table-cell"
-  }, "Quantity"), vNode("li", {
-    "class": "table-cell"
-  }, "Sub Total")), orderItemsVnodes);
+  }, orderItemsVnodes);
 };
 
 var OrderItem = function OrderItem(props) {
@@ -223,21 +199,47 @@ var OrderItem = function OrderItem(props) {
   }; //fix the bellow id field so that the id isnt also in the class
 
 
-  return vNode("ul", {
-    "class": "table-row autocomplete id-" + orderItem.Id,
+  return vNode("div", {
+    "class": "orderItemBox"
+  }, vNode("ul", {
+    "class": "autocomplete id-" + orderItem.Id,
     Id: orderItem.Id,
     onchange: fn,
     "data-orderitem-id": order[0].Id,
     "data-record-id": orderItem.Id,
     "data-action": "save-order-item"
-  }, vNode("li", {
-    "class": "order-actions table-cell"
+  }, vNode("div", {
+    "class": "order-actions order-item",
+    style: "float:left;"
   }, vNode("a", {
     target: "_blank",
     "class": "marginMaker2"
-  }, "remove")), vNode("li", {
-    "class": "order-contact table-cell"
-  }, vNode("input", {
+  }, "Remove Order Item")), vNode("div", {
+    "class": "order-note-buttons order-item",
+    style: "float:left;"
+  }, vNode("button", {
+    "class": "noteButton1 styled-active",
+    type: "button",
+    onclick: toggleNote1
+  }, "Toggle Note 1")), vNode("div", {
+    "class": "order-note-buttons order-item",
+    style: "float:left;"
+  }, vNode("button", {
+    "class": "noteButton2 styled-active",
+    type: "button",
+    onclick: toggleNote2
+  }, "Toggle Note 2")), vNode("div", {
+    "class": "order-note-buttons order-item"
+  }, vNode("button", {
+    "class": "noteButton3 styled-active",
+    type: "button",
+    onclick: toggleNote3
+  }, "Toggle Note 3")), vNode("div", {
+    "class": "notNotes"
+  }, vNode("div", {
+    "class": "order-actions order-item order-item-contact",
+    style: "float:left;"
+  }, vNode("p", null, "Contact"), vNode("input", {
     "class": "orderOnChange orderItemData contact",
     type: "text",
     autocomplete: "off",
@@ -250,17 +252,20 @@ var OrderItem = function OrderItem(props) {
     type: "hidden",
     id: "contactId",
     value: tableContactId
-  })), vNode("li", {
-    "class": "order-experation table-cell"
-  }, vNode("input", {
+  })), vNode("div", {
+    "class": "order-actions order-item order-item-experation",
+    style: "float:left;"
+  }, vNode("p", null, "Experation"), vNode("input", {
     "class": "orderOnChange orderItemData expiration",
+    style: "width: 75px;",
     type: "text",
     id: "experation",
     value: tableExpiry,
     maxlength: "100"
-  })), vNode("li", {
-    "class": "order-product table-cell"
-  }, vNode("input", {
+  })), vNode("div", {
+    "class": "order-actions order-item order-item-product",
+    style: "float:left;"
+  }, vNode("p", null, "Product"), vNode("input", {
     "class": "orderOnChange orderItemData product",
     type: "text",
     autocomplete: "off",
@@ -273,67 +278,128 @@ var OrderItem = function OrderItem(props) {
     type: "hidden",
     id: "productId",
     value: tableProductId
-  })), vNode("li", {
-    "class": "order-description table-cell"
-  }, vNode("input", {
+  })), vNode("div", {
+    "class": "order-actions order-item order-item-description",
+    style: "float:left;"
+  }, vNode("p", null, "Line Descritpion"), vNode("input", {
     "class": "orderOnChange orderItemData description",
     type: "text",
     id: "discription",
     value: tableDiscription,
     maxlength: "100"
-  })), vNode("li", {
-    "class": "order-note1 table-cell"
-  }, vNode("input", {
-    "class": "orderOnChange orderItemData note1",
-    type: "text",
-    id: "note1",
-    value: tableNote1,
-    maxlength: "300"
-  })), vNode("li", {
-    "class": "order-note2 table-cell"
-  }, vNode("input", {
-    "class": "orderOnChange orderItemData note2",
-    type: "text",
-    id: "note2",
-    value: tableNote2,
-    maxlength: "300"
-  })), vNode("li", {
-    "class": "order-note3 table-cell"
-  }, vNode("input", {
-    "class": "orderOnChange orderItemData note3",
-    type: "text",
-    id: "note3",
-    value: tableNote3,
-    maxlength: "300"
-  })), vNode("li", {
-    "class": "order-unitprice table-cell"
-  }, vNode("input", {
+  })), vNode("div", {
+    "class": "order-actions order-item order-item-price",
+    style: "float:left;"
+  }, vNode("p", null, "Unit Price"), vNode("input", {
     "class": "orderOnChange orderItemData unitprice",
+    style: "width: 75px;",
     type: "text",
     id: "unitprice",
     value: tableUnitPrice,
     required: true,
     maxlength: "100"
-  })), vNode("li", {
-    "class": "order-quantity table-cell"
-  }, vNode("input", {
+  })), vNode("div", {
+    "class": "order-actions order-item order-item-quantity",
+    style: "float:left;"
+  }, vNode("p", null, "Quantity"), vNode("input", {
     "class": "orderOnChange orderItemData quantity",
+    style: "width: 75px;",
     type: "number",
     id: "quantity",
     value: tableQuantity,
     required: true,
     maxlength: "100"
-  })), vNode("li", {
-    "class": "order-subtotal table-cell"
-  }, vNode("input", {
+  })), vNode("div", {
+    "class": "order-actions order-item order-item-total"
+  }, vNode("p", null, "Sub Total"), vNode("input", {
     "class": "orderOnChange orderItemData subtotal",
+    style: "width: 75px;",
     type: "number",
     id: "subtotal",
     value: tableSubtotal,
     required: true,
     maxlength: "100"
-  })));
+  }))), vNode("div", {
+    "class": "order-actions order-item order-item-note1 hidden"
+  }, vNode("p", null, "Note 1"), vNode("textarea", {
+    "class": "orderOnChange orderItemData note1",
+    id: "note1",
+    name: "note1",
+    rows: "4",
+    cols: "100"
+  }, tableNote1)), vNode("div", {
+    "class": "order-actions order-item order-item-note2 hidden"
+  }, vNode("p", null, "Note 2"), vNode("textarea", {
+    "class": "orderOnChange orderItemData note2",
+    id: "note2",
+    name: "note2",
+    rows: "4",
+    cols: "100"
+  }, tableNote2)), vNode("div", {
+    "class": "order-actions order-item order-item-note3 hidden"
+  }, vNode("p", null, "Note 3"), vNode("textarea", {
+    "class": "orderOnChange orderItemData note3",
+    id: "note3",
+    name: "note3",
+    rows: "4",
+    cols: "100"
+  }, tableNote3))));
 };
+
+function makeNotesHidden() {
+  document.getElementsByClassName("noteButton1")[0].classList.remove("styled-inactive");
+  document.getElementsByClassName("noteButton2")[0].classList.remove("styled-inactive");
+  document.getElementsByClassName("noteButton3")[0].classList.remove("styled-inactive");
+  document.getElementsByClassName("noteButton1")[0].classList.add("styled-active");
+  document.getElementsByClassName("noteButton2")[0].classList.add("styled-active");
+  document.getElementsByClassName("noteButton3")[0].classList.add("styled-active");
+  document.getElementsByClassName("order-item-note1")[0].classList.add("hidden");
+  document.getElementsByClassName("order-item-note2")[0].classList.add("hidden");
+  document.getElementsByClassName("order-item-note3")[0].classList.add("hidden");
+}
+
+function toggleNote1() {
+  if (document.getElementsByClassName("order-item-note1")[0].classList.contains("hidden")) {
+    //let row = document.getElementById(orderItemId);
+    document.getElementsByClassName("notNotes")[0].classList.add("hidden"); //we are toggling it otherwise add a seperate css class for a button thats currently selected
+    //document.getElementsByClassName("noteButton1")[0].classList.remove("styled-active");
+    //document.getElementsByClassName("noteButton1")[0].classList.add("styled-inactive");
+
+    makeNotesHidden();
+    document.getElementsByClassName("noteButton1")[0].classList.remove("styled-active");
+    document.getElementsByClassName("noteButton1")[0].classList.add("styled-inactive");
+    document.getElementsByClassName("order-item-note1")[0].classList.remove("hidden");
+  } else {
+    document.getElementsByClassName("notNotes")[0].classList.remove("hidden");
+    makeNotesHidden();
+  }
+}
+
+function toggleNote2() {
+  if (document.getElementsByClassName("order-item-note2")[0].classList.contains("hidden")) {
+    document.getElementsByClassName("notNotes")[0].classList.add("hidden");
+    makeNotesHidden();
+    document.getElementsByClassName("noteButton2")[0].classList.remove("styled-active");
+    document.getElementsByClassName("noteButton2")[0].classList.add("styled-inactive");
+    document.getElementsByClassName("order-item-note2")[0].classList.remove("hidden");
+  } else {
+    document.getElementsByClassName("notNotes")[0].classList.remove("hidden");
+    makeNotesHidden();
+  }
+}
+
+function toggleNote3() {
+  if (document.getElementsByClassName("order-item-note3")[0].classList.contains("hidden")) {
+    document.getElementsByClassName("notNotes")[0].classList.add("hidden");
+    makeNotesHidden();
+    document.getElementsByClassName("noteButton3")[0].classList.remove("styled-active");
+    document.getElementsByClassName("noteButton3")[0].classList.add("styled-inactive");
+    document.getElementsByClassName("order-item-note3")[0].classList.remove("hidden");
+  } else {
+    document.getElementsByClassName("notNotes")[0].classList.remove("hidden");
+    makeNotesHidden();
+  }
+}
 
 var EventSearch = function EventSearch(props) {
   var searchBar = props.searchBar;

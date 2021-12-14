@@ -145,19 +145,6 @@ const OrderItemList = function(props) {
 
     return (
         <div style="width:70%; float:left;" id="listOfOrderItems">
-            <ul class="table-row table-headers">
-                <li class="table-cell">Actions</li>
-                <li class="table-cell">Contact</li>
-                <li class="table-cell">Experation</li>
-                <li class="table-cell">Product</li>
-                <li class="table-cell">Line Descritpion</li>
-                <li class="table-cell">Note 1</li>
-                <li class="table-cell">Note 2</li>
-                <li class="table-cell">Note 3</li>
-                <li class="table-cell">Unit Price</li>
-                <li class="table-cell">Quantity</li>
-                <li class="table-cell">Sub Total</li>
-            </ul>
             {orderItemsVnodes}
         </div>
     )
@@ -232,21 +219,137 @@ const OrderItem = function(props) {
 
     //fix the bellow id field so that the id isnt also in the class
     return (
-        <ul class={"table-row autocomplete id-" + orderItem.Id} Id={orderItem.Id} onchange={fn} data-orderitem-id={order[0].Id} data-record-id={orderItem.Id} data-action="save-order-item">
-            <li class="order-actions table-cell"><a target="_blank" class="marginMaker2">remove</a></li>
-            <li class="order-contact table-cell"><input class="orderOnChange orderItemData contact" type="text" autocomplete="off" id="contact" value={tableContact} required maxlength="100" /><input class="orderOnChange orderItemData contactId" type="hidden" id="contactId" value={tableContactId} /></li>
-            <li class="order-experation table-cell"><input class="orderOnChange orderItemData expiration" type="text" id="experation" value={tableExpiry} maxlength="100" /></li>
-            <li class="order-product table-cell"><input class="orderOnChange orderItemData product" type="text" autocomplete="off" id="product" value={tableProduct} required maxlength="100" /><input class="orderOnChange orderItemData productId" type="hidden" id="productId" value={tableProductId} /></li>
-            <li class="order-description table-cell"><input class="orderOnChange orderItemData description" type="text" id="discription" value={tableDiscription} maxlength="100" /></li>
-            <li class="order-note1 table-cell"><input class="orderOnChange orderItemData note1" type="text" id="note1" value={tableNote1} maxlength="300" /></li>
-            <li class="order-note2 table-cell"><input class="orderOnChange orderItemData note2" type="text" id="note2" value={tableNote2} maxlength="300" /></li>
-            <li class="order-note3 table-cell"><input class="orderOnChange orderItemData note3" type="text" id="note3" value={tableNote3} maxlength="300" /></li>
-            <li class="order-unitprice table-cell"><input class="orderOnChange orderItemData unitprice" type="text" id="unitprice" value={tableUnitPrice} required maxlength="100" /></li>
-            <li class="order-quantity table-cell"><input class="orderOnChange orderItemData quantity" type="number" id="quantity" value={tableQuantity} required maxlength="100" /></li>
-            <li class="order-subtotal table-cell"><input class="orderOnChange orderItemData subtotal" type="number" id="subtotal" value={tableSubtotal} required maxlength="100" /></li>
-        </ul>
+        <div class="orderItemBox">
+            <ul class={"autocomplete id-" + orderItem.Id} Id={orderItem.Id} onchange={fn} data-orderitem-id={order[0].Id} data-record-id={orderItem.Id} data-action="save-order-item">
+                <div class="order-actions order-item" style="float:left;">
+                    <a target="_blank" class="marginMaker2">Remove Order Item</a>
+                </div>
+                <div class="order-note-buttons order-item" style="float:left;">
+                    <button class="noteButton1 styled-active" type="button" onclick={toggleNote1}>
+                        Toggle Note 1
+                    </button>
+                </div>
+                <div class="order-note-buttons order-item" style="float:left;">
+                    <button class="noteButton2 styled-active" type="button" onclick={toggleNote2}>
+                        Toggle Note 2
+                    </button>
+                </div>
+                <div class="order-note-buttons order-item">
+                    <button class="noteButton3 styled-active" type="button" onclick={toggleNote3}>
+                        Toggle Note 3
+                    </button>
+                </div>
+                
+                <div class="notNotes">
+                    <div class="order-actions order-item order-item-contact" style="float:left;">
+                        <p>Contact</p>
+                        <input class="orderOnChange orderItemData contact" type="text" autocomplete="off" id="contact" value={tableContact} required maxlength="100" />
+                        <input class="orderOnChange orderItemData contactId" type="hidden" id="contactId" value={tableContactId} />
+                    </div>
+                    <div class="order-actions order-item order-item-experation" style="float:left;">
+                        <p>Experation</p>
+                        <input class="orderOnChange orderItemData expiration" style="width: 75px;" type="text" id="experation" value={tableExpiry} maxlength="100" />
+                    </div>
+                    <div class="order-actions order-item order-item-product" style="float:left;">
+                        <p>Product</p>
+                        <input class="orderOnChange orderItemData product" type="text" autocomplete="off" id="product" value={tableProduct} required maxlength="100" />
+                        <input class="orderOnChange orderItemData productId" type="hidden" id="productId" value={tableProductId} />
+                    </div>
+                    <div class="order-actions order-item order-item-description" style="float:left;">
+                        <p>Line Descritpion</p>
+                        <input class="orderOnChange orderItemData description" type="text" id="discription" value={tableDiscription} maxlength="100" />
+                    </div>
+                    <div class="order-actions order-item order-item-price" style="float:left;">
+                        <p>Unit Price</p>
+                        <input class="orderOnChange orderItemData unitprice" style="width: 75px;" type="text" id="unitprice" value={tableUnitPrice} required maxlength="100" />
+                    </div>
+                    <div class="order-actions order-item order-item-quantity" style="float:left;">
+                        <p>Quantity</p>
+                        <input class="orderOnChange orderItemData quantity" style="width: 75px;" type="number" id="quantity" value={tableQuantity} required maxlength="100" />
+                    </div>
+                    <div class="order-actions order-item order-item-total">
+                        <p>Sub Total</p>
+                        <input class="orderOnChange orderItemData subtotal" style="width: 75px;" type="number" id="subtotal" value={tableSubtotal} required maxlength="100" />
+                    </div>
+                </div>
+                
+                <div class="order-actions order-item order-item-note1 hidden">
+                    <p>Note 1</p>
+                    <textarea class="orderOnChange orderItemData note1" id="note1" name="note1" rows="4" cols="100">{tableNote1}</textarea>
+                </div>
+                <div class="order-actions order-item order-item-note2 hidden">
+                    <p>Note 2</p>
+                    <textarea class="orderOnChange orderItemData note2" id="note2" name="note2" rows="4" cols="100">{tableNote2}</textarea>
+                </div>
+                <div class="order-actions order-item order-item-note3 hidden">
+                    <p>Note 3</p>
+                    <textarea class="orderOnChange orderItemData note3" id="note3" name="note3" rows="4" cols="100">{tableNote3}</textarea>
+                </div>
+            </ul>
+        </div>
     )
 };
+
+function makeNotesHidden() {
+    document.getElementsByClassName("noteButton1")[0].classList.remove("styled-inactive");
+    document.getElementsByClassName("noteButton2")[0].classList.remove("styled-inactive");
+    document.getElementsByClassName("noteButton3")[0].classList.remove("styled-inactive");
+
+    document.getElementsByClassName("noteButton1")[0].classList.add("styled-active");
+    document.getElementsByClassName("noteButton2")[0].classList.add("styled-active");
+    document.getElementsByClassName("noteButton3")[0].classList.add("styled-active");
+
+    document.getElementsByClassName("order-item-note1")[0].classList.add("hidden");
+    document.getElementsByClassName("order-item-note2")[0].classList.add("hidden");
+    document.getElementsByClassName("order-item-note3")[0].classList.add("hidden");
+}
+
+function toggleNote1() {
+    if (document.getElementsByClassName("order-item-note1")[0].classList.contains("hidden")) {
+        //let row = document.getElementById(orderItemId);
+        document.getElementsByClassName("notNotes")[0].classList.add("hidden");
+        //we are toggling it otherwise add a seperate css class for a button thats currently selected
+        //document.getElementsByClassName("noteButton1")[0].classList.remove("styled-active");
+        //document.getElementsByClassName("noteButton1")[0].classList.add("styled-inactive");
+        makeNotesHidden();
+        document.getElementsByClassName("noteButton1")[0].classList.remove("styled-active");
+        document.getElementsByClassName("noteButton1")[0].classList.add("styled-inactive");
+        document.getElementsByClassName("order-item-note1")[0].classList.remove("hidden");
+    }
+    else {
+        document.getElementsByClassName("notNotes")[0].classList.remove("hidden");
+        makeNotesHidden();
+    }
+}
+function toggleNote2() {
+    if (document.getElementsByClassName("order-item-note2")[0].classList.contains("hidden")) {
+        document.getElementsByClassName("notNotes")[0].classList.add("hidden");
+        
+        makeNotesHidden();
+        document.getElementsByClassName("noteButton2")[0].classList.remove("styled-active");
+        document.getElementsByClassName("noteButton2")[0].classList.add("styled-inactive");
+        document.getElementsByClassName("order-item-note2")[0].classList.remove("hidden");
+    }
+    else {
+        document.getElementsByClassName("notNotes")[0].classList.remove("hidden");
+        makeNotesHidden();
+    }
+}
+function toggleNote3() {
+    if (document.getElementsByClassName("order-item-note3")[0].classList.contains("hidden")) {
+        document.getElementsByClassName("notNotes")[0].classList.add("hidden");
+        
+        makeNotesHidden();
+        document.getElementsByClassName("noteButton3")[0].classList.remove("styled-active");
+        document.getElementsByClassName("noteButton3")[0].classList.add("styled-inactive");
+        document.getElementsByClassName("order-item-note3")[0].classList.remove("hidden");
+    }
+    else {
+        document.getElementsByClassName("notNotes")[0].classList.remove("hidden");
+        makeNotesHidden();
+    }
+}
+
 
 
 
