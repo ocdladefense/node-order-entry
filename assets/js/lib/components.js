@@ -101,10 +101,12 @@ var OrderItems = function OrderItems(props) {
       contactName = order.BillToContact.Name;
     }
 
-    return vNode("div", null, vNode("div", null, vNode("div", null, vNode("h1", null, "Order " + order.OrderNumber)), vNode("div", {
+    return vNode("div", null, vNode("div", null, vNode("div", null, vNode("h1", {
+      style: "float:left;"
+    }, "Order " + order.OrderNumber + ":")), vNode("div", {
       "class": "yellow-highlight",
       style: "float:right;"
-    }, "Created " + order.EffectiveDate + ", by NEED THIS DATA"), vNode("h2", null, contactName), vNode("h4", null, order.TotalAmount), theList));
+    }, "Created " + order.EffectiveDate + ", by NEED THIS DATA"), vNode("h1", null, " " + contactName), vNode("h4", null, order.TotalAmount), theList));
   } else {
     console.log("right side not rendered");
     return vNode("div", null, "Right side not rendered");

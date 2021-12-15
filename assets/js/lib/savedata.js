@@ -137,11 +137,16 @@ function setUpAutoComplete() {
 
   for (var i = 0; i < arrayOfElements.length; i++) {
     var mainElementId = arrayOfElements.item(i).id;
-    var mainElementContact = document.querySelector(".id-" + mainElementId + " .order-contact .contact");
-    var mainElementProduct = document.querySelector(".id-" + mainElementId + " .order-product .product"); //console.log(mainElementContact);
+    var mainElementContact = document.querySelector(".id-" + mainElementId + " .order-item-contact .contact");
+    var mainElementProduct = document.querySelector(".id-" + mainElementId + " .order-item-product .product"); //console.log(mainElementContact);
 
-    autocomplete(mainElementContact, contactNames);
-    autocomplete(mainElementProduct, productNames);
+    if (mainElementContact) {
+      autocomplete(mainElementContact, contactNames);
+    }
+
+    if (mainElementProduct) {
+      autocomplete(mainElementProduct, productNames);
+    }
   }
 
   return false;

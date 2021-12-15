@@ -113,12 +113,12 @@ const OrderItems = function(props) {
             <div>
                 <div>
                     <div>
-                        <h1>{"Order " + order.OrderNumber}</h1>
+                        <h1 style="float:left;">{"Order " + order.OrderNumber + ":"}</h1>
                     </div>
                     <div class="yellow-highlight" style="float:right;">
                         {"Created " + order.EffectiveDate + ", by NEED THIS DATA"}
                     </div>
-                    <h2>{contactName}</h2>
+                    <h1>{" " + contactName}</h1>
                     <h4>{order.TotalAmount}</h4>
                     {theList}
                 </div>

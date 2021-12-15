@@ -149,13 +149,17 @@ function setUpAutoComplete() {
     for (let i = 0; i < arrayOfElements.length; i++) {
         let mainElementId = arrayOfElements.item(i).id;
         
-        let mainElementContact = document.querySelector(".id-" + mainElementId + " .order-contact .contact");
-        let mainElementProduct = document.querySelector(".id-" + mainElementId + " .order-product .product");
+        let mainElementContact = document.querySelector(".id-" + mainElementId + " .order-item-contact .contact");
+        let mainElementProduct = document.querySelector(".id-" + mainElementId + " .order-item-product .product");
 
         //console.log(mainElementContact);
 
-        autocomplete(mainElementContact, contactNames);
-        autocomplete(mainElementProduct, productNames);
+        if (mainElementContact) {
+          autocomplete(mainElementContact, contactNames);
+        }
+        if (mainElementProduct) {
+          autocomplete(mainElementProduct, productNames);
+        }
 
     }
     return false;
