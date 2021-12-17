@@ -11,7 +11,7 @@ import { getOrders, getOrderById, getOrderItems } from './data.js';
 
 import { HomeFullNode } from './components.js';
 
-import { switchOrder } from './events.js';
+import { switchOrder, toggleNotes } from './events.js';
 import { saveOrderItem, setUpAutoComplete } from './savedata.js';
 
 
@@ -52,6 +52,8 @@ addEvent("loadorder", switchOrder, setUpAutoComplete);//document.add-event-liste
 addEvent("save-order-item", saveOrderItem, function() {
     setUpAutoComplete();
 });
+addEvent("toggle-notes", toggleNotes);
+
 
 
 domReady(init);

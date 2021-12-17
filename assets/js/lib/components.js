@@ -197,16 +197,24 @@ var OrderItem = function OrderItem(props) {
   var fn = function fn(e) {
     e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.recordId && e.currentTarget.dataset.orderitemId;
     e.frameworkDetail = e.currentTarget.dataset;
-    e.action = e.currentTarget.dataset.action;
+    console.log(e.type);
+
+    if (e.type == "change") {
+      e.action = "save-order-item"; //e.currentTarget.dataset.action;
+    } else if (e.type == "click") {
+      console.log("triggered");
+      e.action = "toggle-notes";
+    }
   }; //fix the bellow id field so that the id isnt also in the class
 
 
   return vNode("div", {
     "class": "orderItemBox"
-  }, vNode("ul", {
+  }, vNode("div", {
     "class": "autocomplete id-" + orderItem.Id,
-    Id: orderItem.Id,
+    id: orderItem.Id,
     onchange: fn,
+    onclick: fn,
     "data-orderitem-id": order[0].Id,
     "data-record-id": orderItem.Id,
     "data-action": "save-order-item"
@@ -222,20 +230,24 @@ var OrderItem = function OrderItem(props) {
   }, vNode("button", {
     "class": "noteButton1 styled-active",
     type: "button",
-    onclick: toggleNote1
+    "data-record-id": orderItem.Id,
+    "data-which-notes": 1
   }, "Toggle Note 1")), vNode("div", {
     "class": "order-note-buttons order-item",
     style: "float:left;"
   }, vNode("button", {
     "class": "noteButton2 styled-active",
     type: "button",
-    onclick: toggleNote2
+    "data-action": "noteButton",
+    "data-record-id": orderItem.Id,
+    "data-which-notes": 2
   }, "Toggle Note 2")), vNode("div", {
     "class": "order-note-buttons order-item"
   }, vNode("button", {
     "class": "noteButton3 styled-active",
     type: "button",
-    onclick: toggleNote3
+    "data-record-id": orderItem.Id,
+    "data-which-notes": 3
   }, "Toggle Note 3")), vNode("div", {
     "class": "notNotes"
   }, vNode("div", {
@@ -347,61 +359,6 @@ var OrderItem = function OrderItem(props) {
     cols: "100"
   }, tableNote3))));
 };
-
-function makeNotesHidden() {
-  document.getElementsByClassName("noteButton1")[0].classList.remove("styled-inactive");
-  document.getElementsByClassName("noteButton2")[0].classList.remove("styled-inactive");
-  document.getElementsByClassName("noteButton3")[0].classList.remove("styled-inactive");
-  document.getElementsByClassName("noteButton1")[0].classList.add("styled-active");
-  document.getElementsByClassName("noteButton2")[0].classList.add("styled-active");
-  document.getElementsByClassName("noteButton3")[0].classList.add("styled-active");
-  document.getElementsByClassName("order-item-note1")[0].classList.add("hidden");
-  document.getElementsByClassName("order-item-note2")[0].classList.add("hidden");
-  document.getElementsByClassName("order-item-note3")[0].classList.add("hidden");
-}
-
-function toggleNote1() {
-  if (document.getElementsByClassName("order-item-note1")[0].classList.contains("hidden")) {
-    //let row = document.getElementById(orderItemId);
-    document.getElementsByClassName("notNotes")[0].classList.add("hidden"); //we are toggling it otherwise add a seperate css class for a button thats currently selected
-    //document.getElementsByClassName("noteButton1")[0].classList.remove("styled-active");
-    //document.getElementsByClassName("noteButton1")[0].classList.add("styled-inactive");
-
-    makeNotesHidden();
-    document.getElementsByClassName("noteButton1")[0].classList.remove("styled-active");
-    document.getElementsByClassName("noteButton1")[0].classList.add("styled-inactive");
-    document.getElementsByClassName("order-item-note1")[0].classList.remove("hidden");
-  } else {
-    document.getElementsByClassName("notNotes")[0].classList.remove("hidden");
-    makeNotesHidden();
-  }
-}
-
-function toggleNote2() {
-  if (document.getElementsByClassName("order-item-note2")[0].classList.contains("hidden")) {
-    document.getElementsByClassName("notNotes")[0].classList.add("hidden");
-    makeNotesHidden();
-    document.getElementsByClassName("noteButton2")[0].classList.remove("styled-active");
-    document.getElementsByClassName("noteButton2")[0].classList.add("styled-inactive");
-    document.getElementsByClassName("order-item-note2")[0].classList.remove("hidden");
-  } else {
-    document.getElementsByClassName("notNotes")[0].classList.remove("hidden");
-    makeNotesHidden();
-  }
-}
-
-function toggleNote3() {
-  if (document.getElementsByClassName("order-item-note3")[0].classList.contains("hidden")) {
-    document.getElementsByClassName("notNotes")[0].classList.add("hidden");
-    makeNotesHidden();
-    document.getElementsByClassName("noteButton3")[0].classList.remove("styled-active");
-    document.getElementsByClassName("noteButton3")[0].classList.add("styled-inactive");
-    document.getElementsByClassName("order-item-note3")[0].classList.remove("hidden");
-  } else {
-    document.getElementsByClassName("notNotes")[0].classList.remove("hidden");
-    makeNotesHidden();
-  }
-}
 
 var EventSearch = function EventSearch(props) {
   var searchBar = props.searchBar;

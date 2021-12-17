@@ -70,6 +70,7 @@ function extractOrderItemData(recordId) {
     let quantity = row.getElementsByClassName("quantity")[0];
     let subtotal = row.getElementsByClassName("subtotal")[0];
 
+    let contactValue = contact.value;
     let expirationValue = expiration.value;
     let productValue = product.value;
     let descriptionValue = description.value;
@@ -80,7 +81,7 @@ function extractOrderItemData(recordId) {
     let quantityValue = quantity.value;
     let subtotalValue = subtotal.value;
 
-    return {"Id":recordId, "Product2Id":productId, "Contact__c":contactId, "Description":descriptionValue, "Note_1__c":note1Value, "Note_2__c":note2Value, "Note_3__c":note3Value, "ExpirationDate__c":expirationValue, "Product2Name":productValue, "UnitPrice":unitpriceValue, "Quantity":quantityValue, "TotalPrice":subtotalValue};
+    return {"Id":recordId, "Contact":contactValue, "Product2Id":productId, "Contact__c":contactId, "Description":descriptionValue, "Note_1__c":note1Value, "Note_2__c":note2Value, "Note_3__c":note3Value, "ExpirationDate__c":expirationValue, "Product2Name":productValue, "UnitPrice":unitpriceValue, "Quantity":quantityValue, "TotalPrice":subtotalValue};
 }
 
 function fillOrderItemData(obj) {
@@ -89,7 +90,7 @@ function fillOrderItemData(obj) {
   
   let row = document.getElementById(obj["Id"]);
 
-  row.getElementsByClassName("contact")[0].value = obj["Id"];//would get their name based off the id simular to product field, using the names array
+  row.getElementsByClassName("contact")[0].value = obj["Contact"];//would get their name based off the id simular to product field, using the names array
 
   row.getElementsByClassName("expiration")[0].value = obj["ExpirationDate__c"];
   row.getElementsByClassName("product")[0].value = obj["Product2Name"];

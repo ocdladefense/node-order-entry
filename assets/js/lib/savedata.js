@@ -58,6 +58,7 @@ function extractOrderItemData(recordId) {
   var unitprice = row.getElementsByClassName("unitprice")[0];
   var quantity = row.getElementsByClassName("quantity")[0];
   var subtotal = row.getElementsByClassName("subtotal")[0];
+  var contactValue = contact.value;
   var expirationValue = expiration.value;
   var productValue = product.value;
   var descriptionValue = description.value;
@@ -69,6 +70,7 @@ function extractOrderItemData(recordId) {
   var subtotalValue = subtotal.value;
   return {
     "Id": recordId,
+    "Contact": contactValue,
     "Product2Id": productId,
     "Contact__c": contactId,
     "Description": descriptionValue,
@@ -87,7 +89,7 @@ function fillOrderItemData(obj) {
   //{"Id":recordId, "Product2Id":productId, "Contact__c":contactId, "Description":descriptionValue, "Note_1__c":note1Value, "Note_2__c":note2Value, "Note_3__c":note3Value, "ExpirationDate__c":expirationValue, "Product2Name":productValue, "UnitPrice":unitpriceValue, "Quantity":quantityValue, "TotalPrice":subtotalValue};
   console.log(obj["Id"]);
   var row = document.getElementById(obj["Id"]);
-  row.getElementsByClassName("contact")[0].value = obj["Id"]; //would get their name based off the id simular to product field, using the names array
+  row.getElementsByClassName("contact")[0].value = obj["Contact"]; //would get their name based off the id simular to product field, using the names array
 
   row.getElementsByClassName("expiration")[0].value = obj["ExpirationDate__c"];
   row.getElementsByClassName("product")[0].value = obj["Product2Name"];

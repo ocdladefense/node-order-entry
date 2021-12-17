@@ -75,12 +75,17 @@
 }
 
 .styled-active:hover {
+	cursor:pointer;
     background-color: rgb(163, 161, 39);
 }
 
 .styled-active:active {
     box-shadow: inset -2px -2px 3px rgba(255, 255, 255, .6),
                 inset 2px 2px 3px rgba(0, 0, 0, .6);
+}
+
+.styled-inactive:hover {
+	cursor:pointer;
 }
 
 .styled-inactive {
