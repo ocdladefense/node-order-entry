@@ -6,9 +6,9 @@ import { OrderItems, HomeFullNode, SmallOrderList, OrderItem, LargeOrderList } f
 import { getOrders, getOrderById, getOrderItems } from './data.js';
 
 function saveOrderItem(props) {
-  console.log("called save"); //extract, autofill, validateBeforeSave, save
+  //console.log("called save");
+  //extract, autofill, validateBeforeSave, save
   //{"orderId":order.Id, "orderItem":orderItem.Id}
-
   var obj = extractOrderItemData(props.recordId);
   obj = autofill(obj);
 
@@ -87,7 +87,7 @@ function extractOrderItemData(recordId) {
 
 function fillOrderItemData(obj) {
   //{"Id":recordId, "Product2Id":productId, "Contact__c":contactId, "Description":descriptionValue, "Note_1__c":note1Value, "Note_2__c":note2Value, "Note_3__c":note3Value, "ExpirationDate__c":expirationValue, "Product2Name":productValue, "UnitPrice":unitpriceValue, "Quantity":quantityValue, "TotalPrice":subtotalValue};
-  console.log(obj["Id"]);
+  //console.log(obj["Id"]);
   var row = document.getElementById(obj["Id"]);
   row.getElementsByClassName("contact")[0].value = obj["Contact"]; //would get their name based off the id simular to product field, using the names array
 
@@ -133,8 +133,8 @@ var contactNames = ["john", "brian", "Mike", "shirt", "jonny", "jonathan johoove
 var productNames = ["Looma", "foobar", "new york times"]; //var currentIds = [];
 
 function setUpAutoComplete() {
-  console.log("auto"); //await new Promise(r => setTimeout(r, 1000)); //a promise . then would probably be better
-
+  //console.log("auto");
+  //await new Promise(r => setTimeout(r, 1000)); //a promise . then would probably be better
   var arrayOfElements = document.getElementsByClassName("autocomplete"); //console.log(arrayOfElements);
 
   for (var i = 0; i < arrayOfElements.length; i++) {

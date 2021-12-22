@@ -33,53 +33,22 @@ function switchOrder(props) {
 }
 
 function toggleNotes(props) {
-    //this could be dynamically done instead of hard coding in 1, 2, and 3
-    let Id = props.recordId;
-    if (props.whichNotes == 1) {
-        let mainElementId = Id;
+    return false;
+    let mainElementId = props.recordId;
+    let noteOrderItemString = " .order-item-note" + props.whichNotes;
+    let noteButtonString = " .noteButton" + props.whichNotes;
+    let noteOrderItem = document.querySelector(".id-" + mainElementId + noteOrderItemString);
+    let noteButton = document.querySelector(".id-" + mainElementId + noteButtonString);
+    console.log(noteButton);
+    //console.log(".id-" + mainElementId + noteButtonString);
 
-        let note1 = document.querySelector(".id-" + mainElementId + " .order-item-note1");
-        
-        if (note1.classList.contains("hidden")) {
+    if (noteOrderItem) {
+        if (noteOrderItem.classList.contains("hidden")) {
             document.querySelector(".id-" + mainElementId + " .notNotes").classList.add("hidden");
             makeNotesHidden(mainElementId);
-            document.querySelector(".id-" + mainElementId + " .noteButton1").classList.remove("styled-active");
-            document.querySelector(".id-" + mainElementId + " .noteButton1").classList.add("styled-inactive");
-            document.querySelector(".id-" + mainElementId + " .order-item-note1").classList.remove("hidden");
-        }
-        else {
-            document.querySelector(".id-" + mainElementId + " .notNotes").classList.remove("hidden");
-            makeNotesHidden(mainElementId);
-        }
-    }
-    else if (props.whichNotes == 2) {
-        let mainElementId = Id;
-
-        let note2 = document.querySelector(".id-" + mainElementId + " .order-item-note2");
-        
-        if (note2.classList.contains("hidden")) {
-            document.querySelector(".id-" + mainElementId + " .notNotes").classList.add("hidden");
-            makeNotesHidden(mainElementId);
-            document.querySelector(".id-" + mainElementId + " .noteButton2").classList.remove("styled-active");
-            document.querySelector(".id-" + mainElementId + " .noteButton2").classList.add("styled-inactive");
-            document.querySelector(".id-" + mainElementId + " .order-item-note2").classList.remove("hidden");
-        }
-        else {
-            document.querySelector(".id-" + mainElementId + " .notNotes").classList.remove("hidden");
-            makeNotesHidden(mainElementId);
-        }
-    }
-    else if (props.whichNotes == 3) {
-        let mainElementId = Id;
-
-        let note3 = document.querySelector(".id-" + mainElementId + " .order-item-note3");
-        
-        if (note3.classList.contains("hidden")) {
-            document.querySelector(".id-" + mainElementId + " .notNotes").classList.add("hidden");
-            makeNotesHidden(mainElementId);
-            document.querySelector(".id-" + mainElementId + " .noteButton3").classList.remove("styled-active");
-            document.querySelector(".id-" + mainElementId + " .noteButton3").classList.add("styled-inactive");
-            document.querySelector(".id-" + mainElementId + " .order-item-note3").classList.remove("hidden");
+            noteButton.classList.remove("styled-active");
+            noteButton.classList.add("styled-inactive");
+            noteOrderItem.classList.remove("hidden");
         }
         else {
             document.querySelector(".id-" + mainElementId + " .notNotes").classList.remove("hidden");

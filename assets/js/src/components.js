@@ -12,7 +12,7 @@ This is our list of components to be used in the app.
 export { HomeFullNode, OrderItems, OrderItem, SmallOrderList, LargeOrderList };
 
 
-import { vNode } from '../../../node_modules/@ocdladefense/view/view.js';
+import { vNode, objectCombiner } from '../../../node_modules/@ocdladefense/view/view.js';
 
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
 
@@ -212,37 +212,39 @@ const OrderItem = function(props) {
 
 
     let fn = function(e) {
-        e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.recordId && e.currentTarget.dataset.orderitemId;
-        e.frameworkDetail = e.currentTarget.dataset;
-        console.log(e.type);
+        let currentTargetDataset = e.currentTarget.dataset || {};
+        let targetDataset = e.target.dataset || {};
+
+        e.frameworkDetail = objectCombiner(currentTargetDataset, targetDataset);
+        //console.log(e.type);
         if (e.type == "change") {
-            e.action = "save-order-item";//e.currentTarget.dataset.action;
+            e.frameworkDetail.action = "save-order-item";//e.currentTarget.dataset.action;
         }
         else if (e.type == "click") {
-            console.log("triggered");
-            e.action = "toggle-notes";
+            //console.log("triggered");
+            e.frameworkDetail.action = "toggle-notes";
         }
     };
 
     //fix the bellow id field so that the id isnt also in the class
     return (
         <div class="orderItemBox">
-            <div class={"autocomplete id-" + orderItem.Id} id={orderItem.Id} onchange={fn} onclick={fn} data-orderitem-id={order[0].Id} data-record-id={orderItem.Id} data-action="save-order-item">
+            <div class={"autocomplete id-" + orderItem.Id} id={"id-" + orderItem.Id} onchange={fn} onclick={fn} data-orderitem-id={order[0].Id} data-record-id={orderItem.Id} data-action="save-order-item">
                 <div class="order-actions order-item" style="float:left;">
                     <a target="_blank" class="marginMaker2">Remove Order Item</a>
                 </div>
                 <div class="order-note-buttons order-item" style="float:left;">
-                    <button class="noteButton1 styled-active" type="button" data-record-id={orderItem.Id} data-which-notes={1}>
+                    <button class="noteButton1 styled-active" type="button" data-which-notes={1}>
                         Toggle Note 1
                     </button>
                 </div>
                 <div class="order-note-buttons order-item" style="float:left;">
-                    <button class="noteButton2 styled-active" type="button" data-action="noteButton" data-record-id={orderItem.Id} data-which-notes={2}>
+                    <button class="noteButton2 styled-active" type="button" data-which-notes={2}>
                         Toggle Note 2
                     </button>
                 </div>
                 <div class="order-note-buttons order-item">
-                    <button class="noteButton3 styled-active" type="button" data-record-id={orderItem.Id} data-which-notes={3}>
+                    <button class="noteButton3 styled-active" type="button" data-which-notes={3}>
                         Toggle Note 3
                     </button>
                 </div>

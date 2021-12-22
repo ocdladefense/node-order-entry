@@ -6,7 +6,7 @@ This is our list of components to be used in the app.
 
 **/
 export { HomeFullNode, OrderItems, OrderItem, SmallOrderList, LargeOrderList };
-import { vNode } from '../../../node_modules/@ocdladefense/view/view.js';
+import { vNode, objectCombiner } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
 import { switchOrder } from './events.js';
 
@@ -195,15 +195,15 @@ var OrderItem = function OrderItem(props) {
   }
 
   var fn = function fn(e) {
-    e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.recordId && e.currentTarget.dataset.orderitemId;
-    e.frameworkDetail = e.currentTarget.dataset;
-    console.log(e.type);
+    var currentTargetDataset = e.currentTarget.dataset || {};
+    var targetDataset = e.target.dataset || {};
+    e.frameworkDetail = objectCombiner(currentTargetDataset, targetDataset); //console.log(e.type);
 
     if (e.type == "change") {
-      e.action = "save-order-item"; //e.currentTarget.dataset.action;
+      e.frameworkDetail.action = "save-order-item"; //e.currentTarget.dataset.action;
     } else if (e.type == "click") {
-      console.log("triggered");
-      e.action = "toggle-notes";
+      //console.log("triggered");
+      e.frameworkDetail.action = "toggle-notes";
     }
   }; //fix the bellow id field so that the id isnt also in the class
 
@@ -212,7 +212,7 @@ var OrderItem = function OrderItem(props) {
     "class": "orderItemBox"
   }, vNode("div", {
     "class": "autocomplete id-" + orderItem.Id,
-    id: orderItem.Id,
+    id: "id-" + orderItem.Id,
     onchange: fn,
     onclick: fn,
     "data-orderitem-id": order[0].Id,
@@ -230,7 +230,6 @@ var OrderItem = function OrderItem(props) {
   }, vNode("button", {
     "class": "noteButton1 styled-active",
     type: "button",
-    "data-record-id": orderItem.Id,
     "data-which-notes": 1
   }, "Toggle Note 1")), vNode("div", {
     "class": "order-note-buttons order-item",
@@ -238,15 +237,12 @@ var OrderItem = function OrderItem(props) {
   }, vNode("button", {
     "class": "noteButton2 styled-active",
     type: "button",
-    "data-action": "noteButton",
-    "data-record-id": orderItem.Id,
     "data-which-notes": 2
   }, "Toggle Note 2")), vNode("div", {
     "class": "order-note-buttons order-item"
   }, vNode("button", {
     "class": "noteButton3 styled-active",
     type: "button",
-    "data-record-id": orderItem.Id,
     "data-which-notes": 3
   }, "Toggle Note 3")), vNode("div", {
     "class": "notNotes"
