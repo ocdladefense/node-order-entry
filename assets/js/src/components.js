@@ -216,17 +216,14 @@ const OrderItem = function(props) {
         let targetDataset = e.target.dataset || {};
 
         e.frameworkDetail = objectCombiner(currentTargetDataset, targetDataset);
-        //console.log(e.type);
         if (e.type == "change") {
-            e.frameworkDetail.action = "save-order-item";//e.currentTarget.dataset.action;
+            e.frameworkDetail.action = "save-order-item";
         }
         else if (e.type == "click") {
-            //console.log("triggered");
             e.frameworkDetail.action = "toggle-notes";
         }
     };
-
-    //fix the bellow id field so that the id isnt also in the class
+    
     return (
         <div class="orderItemBox">
             <div class={"autocomplete id-" + orderItem.Id} id={"id-" + orderItem.Id} onchange={fn} onclick={fn} data-orderitem-id={order[0].Id} data-record-id={orderItem.Id} data-action="save-order-item">
@@ -234,22 +231,22 @@ const OrderItem = function(props) {
                     <a target="_blank" class="marginMaker2">Remove Order Item</a>
                 </div>
                 <div class="order-note-buttons order-item" style="float:left;">
-                    <button class="noteButton1 styled-active" type="button" data-which-notes={1}>
+                    <button class="note-button-1 styled-active" type="button" data-which-notes={1}  data-action="toggle-notes">
                         Toggle Note 1
                     </button>
                 </div>
                 <div class="order-note-buttons order-item" style="float:left;">
-                    <button class="noteButton2 styled-active" type="button" data-which-notes={2}>
+                    <button class="note-button-2 styled-active" type="button" data-which-notes={2}  data-action="toggle-notes">
                         Toggle Note 2
                     </button>
                 </div>
                 <div class="order-note-buttons order-item">
-                    <button class="noteButton3 styled-active" type="button" data-which-notes={3}>
+                    <button class="note-button-3 styled-active" type="button" data-which-notes={3}  data-action="toggle-notes">
                         Toggle Note 3
                     </button>
                 </div>
                 
-                <div class="notNotes">
+                <div class="not-notes hidden displayed">
                     <div class="order-actions order-item order-item-contact" style="float:left;">
                         <p>Contact</p>
                         <input class="orderOnChange orderItemData contact" type="text" autocomplete="off" id="contact" value={tableContact} required maxlength="100" />
@@ -282,15 +279,15 @@ const OrderItem = function(props) {
                     </div>
                 </div>
                 
-                <div class="order-actions order-item order-item-note1 hidden">
+                <div class="order-actions order-item order-item-note-1 hidden">
                     <p>Note 1</p>
                     <textarea class="orderOnChange orderItemData note1" id="note1" name="note1" rows="4" cols="100">{tableNote1}</textarea>
                 </div>
-                <div class="order-actions order-item order-item-note2 hidden">
+                <div class="order-actions order-item order-item-note-2 hidden">
                     <p>Note 2</p>
                     <textarea class="orderOnChange orderItemData note2" id="note2" name="note2" rows="4" cols="100">{tableNote2}</textarea>
                 </div>
-                <div class="order-actions order-item order-item-note3 hidden">
+                <div class="order-actions order-item order-item-note-3 hidden">
                     <p>Note 3</p>
                     <textarea class="orderOnChange orderItemData note3" id="note3" name="note3" rows="4" cols="100">{tableNote3}</textarea>
                 </div>

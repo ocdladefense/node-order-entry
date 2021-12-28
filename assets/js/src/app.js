@@ -53,7 +53,11 @@ addEvent("save-order-item", saveOrderItem, function() {
     setUpAutoComplete();
 });
 addEvent("toggle-notes", toggleNotes);
+addEvent("nothing", nothing);
 
+function nothing() {
+    console.log("nothing");
+}
 
 
 domReady(init);

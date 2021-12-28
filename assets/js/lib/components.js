@@ -193,6 +193,39 @@ var OrderItem = function OrderItem(props) {
   if (orderItem.ExpirationDate__c) {
     tableExpiry = orderItem.ExpirationDate__c;
   }
+  /*
+  let fn = function(e) {
+      e.frameworkDetail = {};
+      let currentTargetDataset = e.currentTarget.dataset || {};
+      let targetDataset = e.target.dataset || {};
+          if (currentTargetDataset.action == "toggle-notes" || currentTargetDataset.action == "save-order-item") {
+          e.frameworkDetail = objectCombiner(currentTargetDataset, targetDataset);
+          
+          //console.log(e.type);
+          if (e.type == "change") {
+              e.frameworkDetail.action = "save-order-item";//e.currentTarget.dataset.action;
+          }
+          else if (e.type == "click") {
+              if (targetDataset.whichNotes) {
+                  console.log(targetDataset);
+                  if (currentTargetDataset.action == "toggle-notes") {
+                      e.frameworkDetail.action = currentTargetDataset.action;
+                  }
+                  else {
+                      console.log(targetDataset.whichNotes);
+                      e.frameworkDetail.action = "nothing";
+                      console.log("f");
+                  }
+              }
+              /*else {
+                  console.log(targetDataset.whichNotes);
+                  e.frameworkDetail.action = "nothing";
+                  console.log("f");
+              }*/
+  //}
+  //}
+  //};
+
 
   var fn = function fn(e) {
     var currentTargetDataset = e.currentTarget.dataset || {};
@@ -205,7 +238,29 @@ var OrderItem = function OrderItem(props) {
       //console.log("triggered");
       e.frameworkDetail.action = "toggle-notes";
     }
-  }; //fix the bellow id field so that the id isnt also in the class
+  };
+  /*
+  let fn = function(e) {
+      let currentTargetDataset;
+      let targetDataset;
+        if (e.currentTarget.dataset) {
+          currentTargetDataset = e.currentTarget.dataset;
+      }
+      else {
+          currentTargetDataset = {};
+      }
+      if (e.target.dataset) {
+          targetDataset = e.target.dataset;
+      }
+      else {
+          targetDataset = {};
+      }
+        e.frameworkDetail = objectCombiner(currentTargetDataset, targetDataset);
+          e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.recordId;
+      e.frameworkDetail = e.currentTarget.dataset;
+      e.action = e.currentTarget.dataset.action;
+  };*/
+  //fix the bellow id field so that the id isnt also in the class
 
 
   return vNode("div", {
@@ -228,24 +283,27 @@ var OrderItem = function OrderItem(props) {
     "class": "order-note-buttons order-item",
     style: "float:left;"
   }, vNode("button", {
-    "class": "noteButton1 styled-active",
+    "class": "note-button-1 styled-active",
     type: "button",
-    "data-which-notes": 1
+    "data-which-notes": 1,
+    "data-action": "toggle-notes"
   }, "Toggle Note 1")), vNode("div", {
     "class": "order-note-buttons order-item",
     style: "float:left;"
   }, vNode("button", {
-    "class": "noteButton2 styled-active",
+    "class": "note-button-2 styled-active",
     type: "button",
-    "data-which-notes": 2
+    "data-which-notes": 2,
+    "data-action": "toggle-notes"
   }, "Toggle Note 2")), vNode("div", {
     "class": "order-note-buttons order-item"
   }, vNode("button", {
-    "class": "noteButton3 styled-active",
+    "class": "note-button-3 styled-active",
     type: "button",
-    "data-which-notes": 3
+    "data-which-notes": 3,
+    "data-action": "toggle-notes"
   }, "Toggle Note 3")), vNode("div", {
-    "class": "notNotes"
+    "class": "not-notes hidden displayed"
   }, vNode("div", {
     "class": "order-actions order-item order-item-contact",
     style: "float:left;"
@@ -330,7 +388,7 @@ var OrderItem = function OrderItem(props) {
     required: true,
     maxlength: "100"
   }))), vNode("div", {
-    "class": "order-actions order-item order-item-note1 hidden"
+    "class": "order-actions order-item order-item-note-1 hidden"
   }, vNode("p", null, "Note 1"), vNode("textarea", {
     "class": "orderOnChange orderItemData note1",
     id: "note1",
@@ -338,7 +396,7 @@ var OrderItem = function OrderItem(props) {
     rows: "4",
     cols: "100"
   }, tableNote1)), vNode("div", {
-    "class": "order-actions order-item order-item-note2 hidden"
+    "class": "order-actions order-item order-item-note-2 hidden"
   }, vNode("p", null, "Note 2"), vNode("textarea", {
     "class": "orderOnChange orderItemData note2",
     id: "note2",
@@ -346,7 +404,7 @@ var OrderItem = function OrderItem(props) {
     rows: "4",
     cols: "100"
   }, tableNote2)), vNode("div", {
-    "class": "order-actions order-item order-item-note3 hidden"
+    "class": "order-actions order-item order-item-note-3 hidden"
   }, vNode("p", null, "Note 3"), vNode("textarea", {
     "class": "orderOnChange orderItemData note3",
     id: "note3",

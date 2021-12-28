@@ -56,6 +56,11 @@
 	display: none;
 }
 
+.displayed {
+	display: contents;
+}
+
+
 .styled-active {
     border: 0;
     line-height: 2;
@@ -84,9 +89,10 @@
                 inset 2px 2px 3px rgba(0, 0, 0, .6);
 }
 
-.styled-inactive:hover {
-	cursor:pointer;
-}
+
+
+/* default state is style-inactive, the unique state is the active state */
+/* selector would be something like button, where it is always the inactive until a new one is added */
 
 .styled-inactive {
 	border: 0;
@@ -103,7 +109,13 @@
                                       rgba(0, 0, 0, .2) 30%,
                                       rgba(0, 0, 0, 0));
     box-shadow: inset 2px 2px 3px rgba(255, 255, 255, .6),
-                inset -2px -2px 3px rgba(0, 0, 0, .6);}
+                inset -2px -2px 3px rgba(0, 0, 0, .6);
+}
+
+.styled-inactive:hover {
+	cursor:pointer;
+}
+
 
 .order-actions {
 	margin-right: 5px;

@@ -26,36 +26,31 @@ function switchOrder(props) {
 }
 
 function toggleNotes(props) {
-  return false;
-  var mainElementId = props.recordId;
-  var noteOrderItemString = " .order-item-note" + props.whichNotes;
-  var noteButtonString = " .noteButton" + props.whichNotes;
-  var noteOrderItem = document.querySelector(".id-" + mainElementId + noteOrderItemString);
-  var noteButton = document.querySelector(".id-" + mainElementId + noteButtonString);
-  console.log(noteButton); //console.log(".id-" + mainElementId + noteButtonString);
+  //let mainElementId = props.recordId;
+  var fieldClass = " .order-item-note-" + props.whichNotes; //can probobly remove these and have them dirrectly below
 
-  if (noteOrderItem) {
-    if (noteOrderItem.classList.contains("hidden")) {
-      document.querySelector(".id-" + mainElementId + " .notNotes").classList.add("hidden");
-      makeNotesHidden(mainElementId);
-      noteButton.classList.remove("styled-active");
-      noteButton.classList.add("styled-inactive");
-      noteOrderItem.classList.remove("hidden");
+  var buttonClass = " .note-button-" + props.whichNotes;
+  var field = document.querySelector("#id-" + props.recordId + fieldClass);
+  var button = document.querySelector("#id-" + props.recordId + buttonClass);
+  console.log(field);
+  console.log(button);
+
+  if (field) {
+    var notNotes = document.querySelector(".id-" + props.recordId + " .not-notes").classList;
+
+    if (field.classList.contains("displayed")) {
+      notNotes.add("displayed");
+      field.classList.remove("displayed");
+      button.classList.remove("styled-inactive");
     } else {
-      document.querySelector(".id-" + mainElementId + " .notNotes").classList.remove("hidden");
-      makeNotesHidden(mainElementId);
+      for (var i = 1; i <= 3; i++) {
+        document.querySelector(".id-" + props.recordId + " .note-button-" + i).classList.remove("styled-inactive");
+        document.querySelector(".id-" + props.recordId + " .order-item-note-" + i).classList.remove("displayed");
+      }
+
+      notNotes.remove("displayed");
+      button.classList.add("styled-inactive");
+      field.classList.add("displayed");
     }
   }
-}
-
-function makeNotesHidden(mainElementId) {
-  document.querySelector(".id-" + mainElementId + " .noteButton1").classList.remove("styled-inactive");
-  document.querySelector(".id-" + mainElementId + " .noteButton2").classList.remove("styled-inactive");
-  document.querySelector(".id-" + mainElementId + " .noteButton3").classList.remove("styled-inactive");
-  document.querySelector(".id-" + mainElementId + " .noteButton1").classList.add("styled-active");
-  document.querySelector(".id-" + mainElementId + " .noteButton2").classList.add("styled-active");
-  document.querySelector(".id-" + mainElementId + " .noteButton3").classList.add("styled-active");
-  document.querySelector(".id-" + mainElementId + " .order-item-note1").classList.add("hidden");
-  document.querySelector(".id-" + mainElementId + " .order-item-note2").classList.add("hidden");
-  document.querySelector(".id-" + mainElementId + " .order-item-note3").classList.add("hidden");
 }
