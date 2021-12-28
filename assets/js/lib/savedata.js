@@ -1,36 +1,42 @@
 /** @jsx vNode */
 export { saveOrderItem, setUpAutoComplete };
-import { vNode, updateElement } from '../../../node_modules/@ocdladefense/view/view.js';
+import { vNode, updateElement, changeMainContainer } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
-import { OrderItems, HomeFullNode } from './components.js';
+import { OrderItems, HomeFullNode, SmallOrderList, OrderItem, LargeOrderList } from './components.js';
 import { getOrders, getOrderById, getOrderItems } from './data.js';
 
 function saveOrderItem(props) {
-  console.log("called save"); //extract, autofill, validateBeforeSave, save
+  //console.log("called save");
+  //extract, autofill, validateBeforeSave, save
   //{"orderId":order.Id, "orderItem":orderItem.Id}
-
   var obj = extractOrderItemData(props.recordId);
   obj = autofill(obj);
 
   if (validateBeforeSave(obj)) {
-    save(obj).then(updateElement)["catch"](function (e) {
+    save(obj) //.then(updateElement)
+    ["catch"](function (e) {
       console.log("error message " + e);
     });
   }
 
+  changeMainContainer("bottomListOrders");
   var theList = getOrders();
   var singleOrder = getOrderById(props.orderitemId);
   var orderItems = getOrderItems(props.orderitemId);
   var HomeFullNodeHolder;
-  return Promise.all([orderItems, theList, singleOrder]).then(function (data) {
-    console.log("promise finished");
-    HomeFullNodeHolder = vNode(HomeFullNode, {
-      orders: data[1],
-      order: data[2],
-      orderItems: data[0]
-    }); //console.log(HomeFullNodeHolder);
+  var OrderItemHolder;
+  fillOrderItemData(obj); //return Promise.resolve();
 
-    return HomeFullNodeHolder; //return <OrderItems orders={data[1]} order={data[2]} orderItems={data[0]} />;
+  return Promise.all([theList, singleOrder, orderItems]).then(function (data) {
+    //console.log("promise finished"); //This stuff is just to resolve an empty promise error
+    //return <SmallOrderList orders={theList} />;
+    //HomeFullNodeHolder = <HomeFullNode orders={data[0]} order={data[1]} orderItems={data[2]} />;
+    //console.log(HomeFullNodeHolder);
+    //OrderItemHolder = <OrderItem order={data[1]} orderItem={obj} />;
+    return vNode(LargeOrderList, {
+      orders: data[0]
+    }); //return HomeFullNodeHolder;
+    //return <OrderItems orders={data[1]} order={data[2]} orderItems={data[0]} />;
   });
 } //Id, Product2Id, Note_1__c, Note_2__c, Note_3__c, FirstName__c, LastName__c, ExpirationDate__c, Product2.Name, UnitPrice, Quantity, TotalPrice FROM OrderItem WHERE OrderId = '$Id'"
 
@@ -41,6 +47,7 @@ function extractOrderItemData(recordId) {
   var contactId = "0030a00001V0uTWAAZ"; //Elijah R.L. Brown
 
   var productId = "01t0a000004Ov6bAAC"; //CLE Archive: 2015 House Bill 2320 (Package)
+  //only gets the first one?
 
   var expiration = row.getElementsByClassName("expiration")[0];
   var product = row.getElementsByClassName("product")[0];
@@ -51,6 +58,7 @@ function extractOrderItemData(recordId) {
   var unitprice = row.getElementsByClassName("unitprice")[0];
   var quantity = row.getElementsByClassName("quantity")[0];
   var subtotal = row.getElementsByClassName("subtotal")[0];
+  var contactValue = contact.value;
   var expirationValue = expiration.value;
   var productValue = product.value;
   var descriptionValue = description.value;
@@ -62,6 +70,7 @@ function extractOrderItemData(recordId) {
   var subtotalValue = subtotal.value;
   return {
     "Id": recordId,
+    "Contact": contactValue,
     "Product2Id": productId,
     "Contact__c": contactId,
     "Description": descriptionValue,
@@ -74,6 +83,23 @@ function extractOrderItemData(recordId) {
     "Quantity": quantityValue,
     "TotalPrice": subtotalValue
   };
+}
+
+function fillOrderItemData(obj) {
+  //{"Id":recordId, "Product2Id":productId, "Contact__c":contactId, "Description":descriptionValue, "Note_1__c":note1Value, "Note_2__c":note2Value, "Note_3__c":note3Value, "ExpirationDate__c":expirationValue, "Product2Name":productValue, "UnitPrice":unitpriceValue, "Quantity":quantityValue, "TotalPrice":subtotalValue};
+  //console.log(obj["Id"]);
+  var row = document.getElementById(obj["Id"]);
+  row.getElementsByClassName("contact")[0].value = obj["Contact"]; //would get their name based off the id simular to product field, using the names array
+
+  row.getElementsByClassName("expiration")[0].value = obj["ExpirationDate__c"];
+  row.getElementsByClassName("product")[0].value = obj["Product2Name"];
+  row.getElementsByClassName("description")[0].value = obj["Description"];
+  row.getElementsByClassName("note1")[0].value = obj["Note_1__c"];
+  row.getElementsByClassName("note2")[0].value = obj["Note_2__c"];
+  row.getElementsByClassName("note3")[0].value = obj["Note_3__c"];
+  row.getElementsByClassName("unitprice")[0].value = obj["UnitPrice"];
+  row.getElementsByClassName("quantity")[0].value = obj["Quantity"];
+  row.getElementsByClassName("subtotal")[0].value = obj["TotalPrice"];
 }
 
 function autofill(obj) {
@@ -107,17 +133,22 @@ var contactNames = ["john", "brian", "Mike", "shirt", "jonny", "jonathan johoove
 var productNames = ["Looma", "foobar", "new york times"]; //var currentIds = [];
 
 function setUpAutoComplete() {
-  console.log("auto"); //await new Promise(r => setTimeout(r, 1000)); //a promise . then would probably be better
-
+  //console.log("auto");
+  //await new Promise(r => setTimeout(r, 1000)); //a promise . then would probably be better
   var arrayOfElements = document.getElementsByClassName("autocomplete"); //console.log(arrayOfElements);
 
   for (var i = 0; i < arrayOfElements.length; i++) {
     var mainElementId = arrayOfElements.item(i).id;
-    var mainElementContact = document.querySelector(".id-" + mainElementId + " .order-contact .contact");
-    var mainElementProduct = document.querySelector(".id-" + mainElementId + " .order-product .product"); //console.log(mainElementContact);
+    var mainElementContact = document.querySelector(".id-" + mainElementId + " .order-item-contact .contact");
+    var mainElementProduct = document.querySelector(".id-" + mainElementId + " .order-item-product .product"); //console.log(mainElementContact);
 
-    autocomplete(mainElementContact, contactNames);
-    autocomplete(mainElementProduct, productNames);
+    if (mainElementContact) {
+      autocomplete(mainElementContact, contactNames);
+    }
+
+    if (mainElementProduct) {
+      autocomplete(mainElementProduct, productNames);
+    }
   }
 
   return false;

@@ -5,8 +5,8 @@
 This is our list of components to be used in the app.
 
 **/
-export { HomeFullNode, OrderItems };
-import { vNode } from '../../../node_modules/@ocdladefense/view/view.js';
+export { HomeFullNode, OrderItems, OrderItem, SmallOrderList, LargeOrderList };
+import { vNode, objectCombiner } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
 import { switchOrder } from './events.js';
 
@@ -15,13 +15,15 @@ var HomeFullNode = function HomeFullNode(props) {
     orders: props.orders,
     order: props.order,
     orderItems: props.orderItems
-  }), vNode(LargeOrderList, {
+  }), vNode("div", {
+    id: "bottomListOrders"
+  }, vNode(LargeOrderList, {
     orders: props.orders
-  }));
+  })));
 };
 
 var OrderDetailsSection = function OrderDetailsSection(props) {
-  return vNode("div", {
+  return vNode("div", null, vNode("div", {
     id: "topscreen",
     style: "width: 100%;"
   }, vNode(SmallOrderList, {
@@ -30,7 +32,7 @@ var OrderDetailsSection = function OrderDetailsSection(props) {
     orders: props.orders,
     order: props.order,
     orderItems: props.orderItems
-  }));
+  })));
 };
 
 var SmallOrderList = function SmallOrderList(props) {
@@ -99,10 +101,12 @@ var OrderItems = function OrderItems(props) {
       contactName = order.BillToContact.Name;
     }
 
-    return vNode("div", null, vNode("div", null, vNode("div", null, vNode("h1", null, "Order " + order.OrderNumber)), vNode("div", {
+    return vNode("div", null, vNode("div", null, vNode("div", null, vNode("h1", {
+      style: "float:left;"
+    }, "Order " + order.OrderNumber + ":")), vNode("div", {
       "class": "yellow-highlight",
       style: "float:right;"
-    }, "Created " + order.EffectiveDate + ", by NEED THIS DATA"), vNode("h2", null, contactName), vNode("h4", null, order.TotalAmount), theList));
+    }, "Created " + order.EffectiveDate + ", by NEED THIS DATA"), vNode("h1", null, " " + contactName), vNode("h4", null, order.TotalAmount), theList));
   } else {
     console.log("right side not rendered");
     return vNode("div", null, "Right side not rendered");
@@ -122,32 +126,9 @@ var OrderItemList = function OrderItemList(props) {
   }
 
   return vNode("div", {
-    style: "width:70%; float:left;"
-  }, vNode("ul", {
-    "class": "table-row table-headers"
-  }, vNode("li", {
-    "class": "table-cell"
-  }, "Actions"), vNode("li", {
-    "class": "table-cell"
-  }, "Contact"), vNode("li", {
-    "class": "table-cell"
-  }, "Experation"), vNode("li", {
-    "class": "table-cell"
-  }, "Product"), vNode("li", {
-    "class": "table-cell"
-  }, "Line Descritpion"), vNode("li", {
-    "class": "table-cell"
-  }, "Note 1"), vNode("li", {
-    "class": "table-cell"
-  }, "Note 2"), vNode("li", {
-    "class": "table-cell"
-  }, "Note 3"), vNode("li", {
-    "class": "table-cell"
-  }, "Unit Price"), vNode("li", {
-    "class": "table-cell"
-  }, "Quantity"), vNode("li", {
-    "class": "table-cell"
-  }, "Sub Total")), orderItemsVnodes);
+    style: "width:70%; float:left;",
+    id: "listOfOrderItems"
+  }, orderItemsVnodes);
 };
 
 var OrderItem = function OrderItem(props) {
@@ -212,29 +193,121 @@ var OrderItem = function OrderItem(props) {
   if (orderItem.ExpirationDate__c) {
     tableExpiry = orderItem.ExpirationDate__c;
   }
+  /*
+  let fn = function(e) {
+      e.frameworkDetail = {};
+      let currentTargetDataset = e.currentTarget.dataset || {};
+      let targetDataset = e.target.dataset || {};
+          if (currentTargetDataset.action == "toggle-notes" || currentTargetDataset.action == "save-order-item") {
+          e.frameworkDetail = objectCombiner(currentTargetDataset, targetDataset);
+          
+          //console.log(e.type);
+          if (e.type == "change") {
+              e.frameworkDetail.action = "save-order-item";//e.currentTarget.dataset.action;
+          }
+          else if (e.type == "click") {
+              if (targetDataset.whichNotes) {
+                  console.log(targetDataset);
+                  if (currentTargetDataset.action == "toggle-notes") {
+                      e.frameworkDetail.action = currentTargetDataset.action;
+                  }
+                  else {
+                      console.log(targetDataset.whichNotes);
+                      e.frameworkDetail.action = "nothing";
+                      console.log("f");
+                  }
+              }
+              /*else {
+                  console.log(targetDataset.whichNotes);
+                  e.frameworkDetail.action = "nothing";
+                  console.log("f");
+              }*/
+  //}
+  //}
+  //};
+
 
   var fn = function fn(e) {
-    e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.recordId && e.currentTarget.dataset.orderitemId;
-    e.frameworkDetail = e.currentTarget.dataset;
-    e.action = e.currentTarget.dataset.action;
-  }; //fix the bellow id field so that the id isnt also in the class
+    var currentTargetDataset = e.currentTarget.dataset || {};
+    var targetDataset = e.target.dataset || {};
+    e.frameworkDetail = objectCombiner(currentTargetDataset, targetDataset); //console.log(e.type);
+
+    if (e.type == "change") {
+      e.frameworkDetail.action = "save-order-item"; //e.currentTarget.dataset.action;
+    } else if (e.type == "click") {
+      //console.log("triggered");
+      e.frameworkDetail.action = "toggle-notes";
+    }
+  };
+  /*
+  let fn = function(e) {
+      let currentTargetDataset;
+      let targetDataset;
+        if (e.currentTarget.dataset) {
+          currentTargetDataset = e.currentTarget.dataset;
+      }
+      else {
+          currentTargetDataset = {};
+      }
+      if (e.target.dataset) {
+          targetDataset = e.target.dataset;
+      }
+      else {
+          targetDataset = {};
+      }
+        e.frameworkDetail = objectCombiner(currentTargetDataset, targetDataset);
+          e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.recordId;
+      e.frameworkDetail = e.currentTarget.dataset;
+      e.action = e.currentTarget.dataset.action;
+  };*/
+  //fix the bellow id field so that the id isnt also in the class
 
 
-  return vNode("ul", {
-    "class": "table-row autocomplete id-" + orderItem.Id,
-    Id: orderItem.Id,
+  return vNode("div", {
+    "class": "orderItemBox"
+  }, vNode("div", {
+    "class": "autocomplete id-" + orderItem.Id,
+    id: "id-" + orderItem.Id,
     onchange: fn,
+    onclick: fn,
     "data-orderitem-id": order[0].Id,
     "data-record-id": orderItem.Id,
     "data-action": "save-order-item"
-  }, vNode("li", {
-    "class": "order-actions table-cell"
+  }, vNode("div", {
+    "class": "order-actions order-item",
+    style: "float:left;"
   }, vNode("a", {
     target: "_blank",
     "class": "marginMaker2"
-  }, "remove")), vNode("li", {
-    "class": "order-contact table-cell"
-  }, vNode("input", {
+  }, "Remove Order Item")), vNode("div", {
+    "class": "order-note-buttons order-item",
+    style: "float:left;"
+  }, vNode("button", {
+    "class": "note-button-1 styled-active",
+    type: "button",
+    "data-which-notes": 1,
+    "data-action": "toggle-notes"
+  }, "Toggle Note 1")), vNode("div", {
+    "class": "order-note-buttons order-item",
+    style: "float:left;"
+  }, vNode("button", {
+    "class": "note-button-2 styled-active",
+    type: "button",
+    "data-which-notes": 2,
+    "data-action": "toggle-notes"
+  }, "Toggle Note 2")), vNode("div", {
+    "class": "order-note-buttons order-item"
+  }, vNode("button", {
+    "class": "note-button-3 styled-active",
+    type: "button",
+    "data-which-notes": 3,
+    "data-action": "toggle-notes"
+  }, "Toggle Note 3")), vNode("div", {
+    "class": "not-notes hidden displayed"
+  }, vNode("div", {
+    "class": "order-actions order-item order-item-contact",
+    style: "float:left;"
+  }, vNode("p", null, "Contact"), vNode("input", {
     "class": "orderOnChange orderItemData contact",
     type: "text",
     autocomplete: "off",
@@ -247,17 +320,20 @@ var OrderItem = function OrderItem(props) {
     type: "hidden",
     id: "contactId",
     value: tableContactId
-  })), vNode("li", {
-    "class": "order-experation table-cell"
-  }, vNode("input", {
+  })), vNode("div", {
+    "class": "order-actions order-item order-item-experation",
+    style: "float:left;"
+  }, vNode("p", null, "Experation"), vNode("input", {
     "class": "orderOnChange orderItemData expiration",
+    style: "width: 75px;",
     type: "text",
     id: "experation",
     value: tableExpiry,
     maxlength: "100"
-  })), vNode("li", {
-    "class": "order-product table-cell"
-  }, vNode("input", {
+  })), vNode("div", {
+    "class": "order-actions order-item order-item-product",
+    style: "float:left;"
+  }, vNode("p", null, "Product"), vNode("input", {
     "class": "orderOnChange orderItemData product",
     type: "text",
     autocomplete: "off",
@@ -270,66 +346,72 @@ var OrderItem = function OrderItem(props) {
     type: "hidden",
     id: "productId",
     value: tableProductId
-  })), vNode("li", {
-    "class": "order-description table-cell"
-  }, vNode("input", {
+  })), vNode("div", {
+    "class": "order-actions order-item order-item-description",
+    style: "float:left;"
+  }, vNode("p", null, "Line Descritpion"), vNode("input", {
     "class": "orderOnChange orderItemData description",
     type: "text",
     id: "discription",
     value: tableDiscription,
     maxlength: "100"
-  })), vNode("li", {
-    "class": "order-note1 table-cell"
-  }, vNode("input", {
-    "class": "orderOnChange orderItemData note1",
-    type: "text",
-    id: "note1",
-    value: tableNote1,
-    maxlength: "300"
-  })), vNode("li", {
-    "class": "order-note2 table-cell"
-  }, vNode("input", {
-    "class": "orderOnChange orderItemData note2",
-    type: "text",
-    id: "note2",
-    value: tableNote2,
-    maxlength: "300"
-  })), vNode("li", {
-    "class": "order-note3 table-cell"
-  }, vNode("input", {
-    "class": "orderOnChange orderItemData note3",
-    type: "text",
-    id: "note3",
-    value: tableNote3,
-    maxlength: "300"
-  })), vNode("li", {
-    "class": "order-unitprice table-cell"
-  }, vNode("input", {
+  })), vNode("div", {
+    "class": "order-actions order-item order-item-price",
+    style: "float:left;"
+  }, vNode("p", null, "Unit Price"), vNode("input", {
     "class": "orderOnChange orderItemData unitprice",
+    style: "width: 75px;",
     type: "text",
     id: "unitprice",
     value: tableUnitPrice,
     required: true,
     maxlength: "100"
-  })), vNode("li", {
-    "class": "order-quantity table-cell"
-  }, vNode("input", {
+  })), vNode("div", {
+    "class": "order-actions order-item order-item-quantity",
+    style: "float:left;"
+  }, vNode("p", null, "Quantity"), vNode("input", {
     "class": "orderOnChange orderItemData quantity",
+    style: "width: 75px;",
     type: "number",
     id: "quantity",
     value: tableQuantity,
     required: true,
     maxlength: "100"
-  })), vNode("li", {
-    "class": "order-subtotal table-cell"
-  }, vNode("input", {
+  })), vNode("div", {
+    "class": "order-actions order-item order-item-total"
+  }, vNode("p", null, "Sub Total"), vNode("input", {
     "class": "orderOnChange orderItemData subtotal",
+    style: "width: 75px;",
     type: "number",
     id: "subtotal",
     value: tableSubtotal,
     required: true,
     maxlength: "100"
-  })));
+  }))), vNode("div", {
+    "class": "order-actions order-item order-item-note-1 hidden"
+  }, vNode("p", null, "Note 1"), vNode("textarea", {
+    "class": "orderOnChange orderItemData note1",
+    id: "note1",
+    name: "note1",
+    rows: "4",
+    cols: "100"
+  }, tableNote1)), vNode("div", {
+    "class": "order-actions order-item order-item-note-2 hidden"
+  }, vNode("p", null, "Note 2"), vNode("textarea", {
+    "class": "orderOnChange orderItemData note2",
+    id: "note2",
+    name: "note2",
+    rows: "4",
+    cols: "100"
+  }, tableNote2)), vNode("div", {
+    "class": "order-actions order-item order-item-note-3 hidden"
+  }, vNode("p", null, "Note 3"), vNode("textarea", {
+    "class": "orderOnChange orderItemData note3",
+    id: "note3",
+    name: "note3",
+    rows: "4",
+    cols: "100"
+  }, tableNote3))));
 };
 
 var EventSearch = function EventSearch(props) {
@@ -463,8 +545,19 @@ var Attendee = function Attendee(props) {
 };
 
 var LargeOrderList = function LargeOrderList(props) {
+  var orders = props.orders;
+  var list = [];
+
+  for (var i = 0; i < orders.length; i++) {
+    list.push(vNode(OrderListOrder, {
+      order: orders[i]
+    }));
+  }
+
   return vNode("div", {
     id: "bottomscreen",
     style: "clear:both"
-  });
+  }, vNode("div", {
+    "class": "orderList"
+  }, list));
 };

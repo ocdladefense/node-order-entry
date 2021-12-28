@@ -4,7 +4,7 @@ import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.j
 import { cityFormatter, stateFormatter, createMemberX } from './contactFieldFormat.js';
 import { getOrders, getOrderById, getOrderItems } from './data.js';
 import { HomeFullNode } from './components.js';
-import { switchOrder } from './events.js';
+import { switchOrder, toggleNotes } from './events.js';
 import { saveOrderItem, setUpAutoComplete } from './savedata.js';
 
 function init() {
@@ -40,4 +40,11 @@ addEvent("loadorder", switchOrder, setUpAutoComplete); //document.add-event-list
 addEvent("save-order-item", saveOrderItem, function () {
   setUpAutoComplete();
 });
+addEvent("toggle-notes", toggleNotes);
+addEvent("nothing", nothing);
+
+function nothing() {
+  console.log("nothing");
+}
+
 domReady(init);

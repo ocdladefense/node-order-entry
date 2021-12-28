@@ -9,10 +9,10 @@ This is our list of components to be used in the app.
 
 
 
-export { HomeFullNode, OrderItems, OrderItem };
+export { HomeFullNode, OrderItems, OrderItem, SmallOrderList, LargeOrderList };
 
 
-import { vNode } from '../../../node_modules/@ocdladefense/view/view.js';
+import { vNode, objectCombiner } from '../../../node_modules/@ocdladefense/view/view.js';
 
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
 
@@ -23,16 +23,20 @@ const HomeFullNode = function(props) {
     return(
         <div>
             <OrderDetailsSection orders={props.orders} order={props.order} orderItems={props.orderItems} /> 
-            <LargeOrderList orders={props.orders} />
+            <div id="bottomListOrders">
+                <LargeOrderList orders={props.orders} />
+            </div>
         </div>
     )
 };
 
 const OrderDetailsSection = function(props) {
     return(
-        <div id="topscreen" style="width: 100%;">
-            <SmallOrderList orders={props.orders} /> 
-            <OrderItems orders={props.orders} order={props.order} orderItems={props.orderItems} />
+        <div>
+            <div id="topscreen" style="width: 100%;">
+                <SmallOrderList orders={props.orders} /> 
+                <OrderItems orders={props.orders} order={props.order} orderItems={props.orderItems} />
+            </div>
         </div>
     )
 };
@@ -109,12 +113,12 @@ const OrderItems = function(props) {
             <div>
                 <div>
                     <div>
-                        <h1>{"Order " + order.OrderNumber}</h1>
+                        <h1 style="float:left;">{"Order " + order.OrderNumber + ":"}</h1>
                     </div>
                     <div class="yellow-highlight" style="float:right;">
                         {"Created " + order.EffectiveDate + ", by NEED THIS DATA"}
                     </div>
-                    <h2>{contactName}</h2>
+                    <h1>{" " + contactName}</h1>
                     <h4>{order.TotalAmount}</h4>
                     {theList}
                 </div>
@@ -140,20 +144,7 @@ const OrderItemList = function(props) {
     }
 
     return (
-        <div style="width:70%; float:left;">
-            <ul class="table-row table-headers">
-                <li class="table-cell">Actions</li>
-                <li class="table-cell">Contact</li>
-                <li class="table-cell">Experation</li>
-                <li class="table-cell">Product</li>
-                <li class="table-cell">Line Descritpion</li>
-                <li class="table-cell">Note 1</li>
-                <li class="table-cell">Note 2</li>
-                <li class="table-cell">Note 3</li>
-                <li class="table-cell">Unit Price</li>
-                <li class="table-cell">Quantity</li>
-                <li class="table-cell">Sub Total</li>
-            </ul>
+        <div style="width:70%; float:left;" id="listOfOrderItems">
             {orderItemsVnodes}
         </div>
     )
@@ -221,28 +212,90 @@ const OrderItem = function(props) {
 
 
     let fn = function(e) {
-        e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.recordId && e.currentTarget.dataset.orderitemId;
-        e.frameworkDetail = e.currentTarget.dataset;
-        e.action = e.currentTarget.dataset.action;
-    };
+        let currentTargetDataset = e.currentTarget.dataset || {};
+        let targetDataset = e.target.dataset || {};
 
-    //fix the bellow id field so that the id isnt also in the class
+        e.frameworkDetail = objectCombiner(currentTargetDataset, targetDataset);
+        if (e.type == "change") {
+            e.frameworkDetail.action = "save-order-item";
+        }
+        else if (e.type == "click") {
+            e.frameworkDetail.action = "toggle-notes";
+        }
+    };
+    
     return (
-        <ul class={"table-row autocomplete id-" + orderItem.Id} Id={orderItem.Id} onchange={fn} data-orderitem-id={order[0].Id} data-record-id={orderItem.Id} data-action="save-order-item">
-            <li class="order-actions table-cell"><a target="_blank" class="marginMaker2">remove</a></li>
-            <li class="order-contact table-cell"><input class="orderOnChange orderItemData contact" type="text" autocomplete="off" id="contact" value={tableContact} required maxlength="100" /><input class="orderOnChange orderItemData contactId" type="hidden" id="contactId" value={tableContactId} /></li>
-            <li class="order-experation table-cell"><input class="orderOnChange orderItemData expiration" type="text" id="experation" value={tableExpiry} maxlength="100" /></li>
-            <li class="order-product table-cell"><input class="orderOnChange orderItemData product" type="text" autocomplete="off" id="product" value={tableProduct} required maxlength="100" /><input class="orderOnChange orderItemData productId" type="hidden" id="productId" value={tableProductId} /></li>
-            <li class="order-description table-cell"><input class="orderOnChange orderItemData description" type="text" id="discription" value={tableDiscription} maxlength="100" /></li>
-            <li class="order-note1 table-cell"><input class="orderOnChange orderItemData note1" type="text" id="note1" value={tableNote1} maxlength="300" /></li>
-            <li class="order-note2 table-cell"><input class="orderOnChange orderItemData note2" type="text" id="note2" value={tableNote2} maxlength="300" /></li>
-            <li class="order-note3 table-cell"><input class="orderOnChange orderItemData note3" type="text" id="note3" value={tableNote3} maxlength="300" /></li>
-            <li class="order-unitprice table-cell"><input class="orderOnChange orderItemData unitprice" type="text" id="unitprice" value={tableUnitPrice} required maxlength="100" /></li>
-            <li class="order-quantity table-cell"><input class="orderOnChange orderItemData quantity" type="number" id="quantity" value={tableQuantity} required maxlength="100" /></li>
-            <li class="order-subtotal table-cell"><input class="orderOnChange orderItemData subtotal" type="number" id="subtotal" value={tableSubtotal} required maxlength="100" /></li>
-        </ul>
+        <div class="orderItemBox">
+            <div class={"autocomplete id-" + orderItem.Id} id={"id-" + orderItem.Id} onchange={fn} onclick={fn} data-orderitem-id={order[0].Id} data-record-id={orderItem.Id} data-action="save-order-item">
+                <div class="order-actions order-item" style="float:left;">
+                    <a target="_blank" class="marginMaker2">Remove Order Item</a>
+                </div>
+                <div class="order-note-buttons order-item" style="float:left;">
+                    <button class="note-button-1 styled-active" type="button" data-which-notes={1}  data-action="toggle-notes">
+                        Toggle Note 1
+                    </button>
+                </div>
+                <div class="order-note-buttons order-item" style="float:left;">
+                    <button class="note-button-2 styled-active" type="button" data-which-notes={2}  data-action="toggle-notes">
+                        Toggle Note 2
+                    </button>
+                </div>
+                <div class="order-note-buttons order-item">
+                    <button class="note-button-3 styled-active" type="button" data-which-notes={3}  data-action="toggle-notes">
+                        Toggle Note 3
+                    </button>
+                </div>
+                
+                <div class="not-notes hidden displayed">
+                    <div class="order-actions order-item order-item-contact" style="float:left;">
+                        <p>Contact</p>
+                        <input class="orderOnChange orderItemData contact" type="text" autocomplete="off" id="contact" value={tableContact} required maxlength="100" />
+                        <input class="orderOnChange orderItemData contactId" type="hidden" id="contactId" value={tableContactId} />
+                    </div>
+                    <div class="order-actions order-item order-item-experation" style="float:left;">
+                        <p>Experation</p>
+                        <input class="orderOnChange orderItemData expiration" style="width: 75px;" type="text" id="experation" value={tableExpiry} maxlength="100" />
+                    </div>
+                    <div class="order-actions order-item order-item-product" style="float:left;">
+                        <p>Product</p>
+                        <input class="orderOnChange orderItemData product" type="text" autocomplete="off" id="product" value={tableProduct} required maxlength="100" />
+                        <input class="orderOnChange orderItemData productId" type="hidden" id="productId" value={tableProductId} />
+                    </div>
+                    <div class="order-actions order-item order-item-description" style="float:left;">
+                        <p>Line Descritpion</p>
+                        <input class="orderOnChange orderItemData description" type="text" id="discription" value={tableDiscription} maxlength="100" />
+                    </div>
+                    <div class="order-actions order-item order-item-price" style="float:left;">
+                        <p>Unit Price</p>
+                        <input class="orderOnChange orderItemData unitprice" style="width: 75px;" type="text" id="unitprice" value={tableUnitPrice} required maxlength="100" />
+                    </div>
+                    <div class="order-actions order-item order-item-quantity" style="float:left;">
+                        <p>Quantity</p>
+                        <input class="orderOnChange orderItemData quantity" style="width: 75px;" type="number" id="quantity" value={tableQuantity} required maxlength="100" />
+                    </div>
+                    <div class="order-actions order-item order-item-total">
+                        <p>Sub Total</p>
+                        <input class="orderOnChange orderItemData subtotal" style="width: 75px;" type="number" id="subtotal" value={tableSubtotal} required maxlength="100" />
+                    </div>
+                </div>
+                
+                <div class="order-actions order-item order-item-note-1 hidden">
+                    <p>Note 1</p>
+                    <textarea class="orderOnChange orderItemData note1" id="note1" name="note1" rows="4" cols="100">{tableNote1}</textarea>
+                </div>
+                <div class="order-actions order-item order-item-note-2 hidden">
+                    <p>Note 2</p>
+                    <textarea class="orderOnChange orderItemData note2" id="note2" name="note2" rows="4" cols="100">{tableNote2}</textarea>
+                </div>
+                <div class="order-actions order-item order-item-note-3 hidden">
+                    <p>Note 3</p>
+                    <textarea class="orderOnChange orderItemData note3" id="note3" name="note3" rows="4" cols="100">{tableNote3}</textarea>
+                </div>
+            </div>
+        </div>
     )
 };
+
 
 
 
@@ -383,8 +436,18 @@ const Attendee = function(props) {
 
 
 const LargeOrderList = function(props) {
+    let orders = props.orders;
+
+    let list = [];
+    for (let i = 0; i < orders.length; i++) {
+        list.push(<OrderListOrder order={orders[i]} />);
+    }
+
     return(
         <div id="bottomscreen" style="clear:both">
+            <div class="orderList">
+                {list}
+            </div>
         </div>
     )
 };
