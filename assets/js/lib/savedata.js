@@ -10,6 +10,7 @@ function saveOrderItem(props) {
   //extract, autofill, validateBeforeSave, save
   //{"orderId":order.Id, "orderItem":orderItem.Id}
   var obj = extractOrderItemData(props.recordId);
+  console.log(obj);
   obj = autofill(obj);
 
   if (validateBeforeSave(obj)) {
@@ -42,25 +43,29 @@ function saveOrderItem(props) {
 
 
 function extractOrderItemData(recordId) {
-  var row = document.getElementById(recordId);
-  var contact = row.getElementsByClassName("contact")[0];
-  var contactId = "0030a00001V0uTWAAZ"; //Elijah R.L. Brown
-
-  var productId = "01t0a000004Ov6bAAC"; //CLE Archive: 2015 House Bill 2320 (Package)
+  //let contact = document.querySelector("#id-" + recordId + " .contact")[0];
+  //let row = document.getElementById(recordId);
+  //let contact = row.getElementsByClassName("contact")[0];
+  //let contactId = "0030a00001V0uTWAAZ"; //Elijah R.L. Brown
+  //let productId = "01t0a000004Ov6bAAC"; //CLE Archive: 2015 House Bill 2320 (Package)
   //only gets the first one?
-
-  var expiration = row.getElementsByClassName("expiration")[0];
-  var product = row.getElementsByClassName("product")[0];
-  var description = row.getElementsByClassName("description")[0];
-  var note1 = row.getElementsByClassName("note1")[0];
-  var note2 = row.getElementsByClassName("note2")[0];
-  var note3 = row.getElementsByClassName("note3")[0];
-  var unitprice = row.getElementsByClassName("unitprice")[0];
-  var quantity = row.getElementsByClassName("quantity")[0];
-  var subtotal = row.getElementsByClassName("subtotal")[0];
+  var contact = document.querySelector("#id-" + recordId + " .contact");
+  var product = document.querySelector("#id-" + recordId + " .product");
+  var contactId = document.querySelector("#id-" + recordId + " .contactId");
+  var productId = document.querySelector("#id-" + recordId + " .productId");
+  var expiration = document.querySelector("#id-" + recordId + " .expiration");
+  var description = document.querySelector("#id-" + recordId + " .description");
+  var note1 = document.querySelector("#id-" + recordId + " .note1");
+  var note2 = document.querySelector("#id-" + recordId + " .note2");
+  var note3 = document.querySelector("#id-" + recordId + " .note3");
+  var unitprice = document.querySelector("#id-" + recordId + " .unitprice");
+  var quantity = document.querySelector("#id-" + recordId + " .quantity");
+  var subtotal = document.querySelector("#id-" + recordId + " .subtotal");
   var contactValue = contact.value;
-  var expirationValue = expiration.value;
   var productValue = product.value;
+  var contactIdValue = contactId.value;
+  var productIdValue = productId.value;
+  var expirationValue = expiration.value;
   var descriptionValue = description.value;
   var note1Value = note1.value;
   var note2Value = note2.value;
@@ -70,15 +75,15 @@ function extractOrderItemData(recordId) {
   var subtotalValue = subtotal.value;
   return {
     "Id": recordId,
-    "Contact": contactValue,
-    "Product2Id": productId,
-    "Contact__c": contactId,
+    "ContactName": contactValue,
+    "Product2Name": productValue,
+    "ContactId": contactIdValue,
+    "Product2Id": productIdValue,
     "Description": descriptionValue,
     "Note_1__c": note1Value,
     "Note_2__c": note2Value,
     "Note_3__c": note3Value,
     "ExpirationDate__c": expirationValue,
-    "Product2Name": productValue,
     "UnitPrice": unitpriceValue,
     "Quantity": quantityValue,
     "TotalPrice": subtotalValue
@@ -88,18 +93,17 @@ function extractOrderItemData(recordId) {
 function fillOrderItemData(obj) {
   //{"Id":recordId, "Product2Id":productId, "Contact__c":contactId, "Description":descriptionValue, "Note_1__c":note1Value, "Note_2__c":note2Value, "Note_3__c":note3Value, "ExpirationDate__c":expirationValue, "Product2Name":productValue, "UnitPrice":unitpriceValue, "Quantity":quantityValue, "TotalPrice":subtotalValue};
   //console.log(obj["Id"]);
-  var row = document.getElementById(obj["Id"]);
-  row.getElementsByClassName("contact")[0].value = obj["Contact"]; //would get their name based off the id simular to product field, using the names array
-
-  row.getElementsByClassName("expiration")[0].value = obj["ExpirationDate__c"];
-  row.getElementsByClassName("product")[0].value = obj["Product2Name"];
-  row.getElementsByClassName("description")[0].value = obj["Description"];
-  row.getElementsByClassName("note1")[0].value = obj["Note_1__c"];
-  row.getElementsByClassName("note2")[0].value = obj["Note_2__c"];
-  row.getElementsByClassName("note3")[0].value = obj["Note_3__c"];
-  row.getElementsByClassName("unitprice")[0].value = obj["UnitPrice"];
-  row.getElementsByClassName("quantity")[0].value = obj["Quantity"];
-  row.getElementsByClassName("subtotal")[0].value = obj["TotalPrice"];
+  //let row = document.getElementById(obj["Id"]);
+  document.querySelector("#id-" + obj["Id"] + " .contact").value = obj["ContactName"];
+  document.querySelector("#id-" + obj["Id"] + " .expiration").value = obj["ExpirationDate__c"];
+  document.querySelector("#id-" + obj["Id"] + " .product").value = obj["Product2Name"];
+  document.querySelector("#id-" + obj["Id"] + " .description").value = obj["Description"];
+  document.querySelector("#id-" + obj["Id"] + " .note1").value = obj["Note_1__c"];
+  document.querySelector("#id-" + obj["Id"] + " .note2").value = obj["Note_2__c"];
+  document.querySelector("#id-" + obj["Id"] + " .note3").value = obj["Note_3__c"];
+  document.querySelector("#id-" + obj["Id"] + " .unitprice").value = obj["UnitPrice"];
+  document.querySelector("#id-" + obj["Id"] + " .quantity").value = obj["Quantity"];
+  document.querySelector("#id-" + obj["Id"] + " .subtotal").value = obj["TotalPrice"];
 }
 
 function autofill(obj) {
@@ -129,25 +133,53 @@ function save(obj) {
   }
 }
 
-var contactNames = ["john", "brian", "Mike", "shirt", "jonny", "jonathan johoover"];
-var productNames = ["Looma", "foobar", "new york times"]; //var currentIds = [];
+var contactNames = [{
+  Id: "0030a00001V0uTWAAZ",
+  Name: "Elijah R.L. Brown"
+}, {
+  Id: "0030a00001gICbsAAG",
+  Name: "Mary Brownville"
+}, {
+  Id: "0030a00001edgHuAAI",
+  Name: "Edward Piper"
+}, {
+  Id: "0030a00001V0uqmAAB",
+  Name: "Zoe E. Bayham"
+}];
+var productNames = [{
+  Id: "01t0a000004Ov6bAAC",
+  Name: "CLE Archive: 2015 House Bill 2320 (Package)"
+}, {
+  Id: "01t0a000004Ov6eAAC",
+  Name: "CLE Archive: 2014 Defending the Modern DUII"
+}, {
+  Id: "01t0a000004Ov6fAAC",
+  Name: "Search and Seizure Seminar–Nonmember Lawyer"
+}, {
+  Id: "01t0a000004Ov6qAAC",
+  Name: "Ardent Advocate 2016–Nonmember Lawyer"
+}]; //var currentIds = [];
+
+window.setUpAutoComplete = setUpAutoComplete;
 
 function setUpAutoComplete() {
-  //console.log("auto");
-  //await new Promise(r => setTimeout(r, 1000)); //a promise . then would probably be better
+  console.log("auto"); //await new Promise(r => setTimeout(r, 1000)); //a promise . then would probably be better
+
   var arrayOfElements = document.getElementsByClassName("autocomplete"); //console.log(arrayOfElements);
 
   for (var i = 0; i < arrayOfElements.length; i++) {
     var mainElementId = arrayOfElements.item(i).id;
-    var mainElementContact = document.querySelector(".id-" + mainElementId + " .order-item-contact .contact");
-    var mainElementProduct = document.querySelector(".id-" + mainElementId + " .order-item-product .product"); //console.log(mainElementContact);
+    var mainElementContact = document.querySelector("#" + mainElementId + " .order-item-contact .contact");
+    var mainElementProduct = document.querySelector("#" + mainElementId + " .order-item-product .product");
 
     if (mainElementContact) {
-      autocomplete(mainElementContact, contactNames);
+      var contactId = document.querySelector("#" + mainElementId + " .contactId");
+      autocomplete(mainElementContact, contactNames, contactId);
     }
 
     if (mainElementProduct) {
-      autocomplete(mainElementProduct, productNames);
+      var productId = document.querySelector("#" + mainElementId + " .productId");
+      autocomplete(mainElementProduct, productNames, productId);
     }
   }
 
@@ -155,6 +187,8 @@ function setUpAutoComplete() {
 }
 
 function autocomplete(inp, arr) {
+  var inpId = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
   /*the autocomplete function takes two arguments,
   the text field element and an array of possible autocompleted values:*/
   var currentFocus;
@@ -186,23 +220,29 @@ function autocomplete(inp, arr) {
 
     for (i = 0; i < arr.length; i++) {
       /*check if the item starts with the same letters as the text field value:*/
-      if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+      if (arr[i].Name.substr(0, val.length).toUpperCase() == val.toUpperCase()) {
         /*create a DIV element for each matching element:*/
         b = document.createElement("DIV");
         /*make the matching letters bold:*/
 
-        b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
-        b.innerHTML += arr[i].substr(val.length);
+        b.innerHTML = "<strong>" + arr[i].Name.substr(0, val.length) + "</strong>";
+        b.innerHTML += arr[i].Name.substr(val.length);
+        b.innerHTML += " (" + arr[i].Id + ")";
         /*insert a input field that will hold the current array item's value:*/
 
-        b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+        b.innerHTML += "<input type='hidden' class='autoItem' value='" + arr[i].Name + "'><input type='hidden' class='hidden' value='" + arr[i].Id + "'>";
         /*execute a function when someone clicks on the item value (DIV element):*/
 
         b.addEventListener("click", function (e) {
           /*insert the value for the autocomplete text field:*/
           inp.value = this.getElementsByTagName("input")[0].value;
+
+          if (inpId) {
+            inpId.value = this.getElementsByTagName("input")[1].value;
+          }
           /*close the list of autocompleted values,
           (or any other open lists of autocompleted values:*/
+
 
           closeAllLists();
         });

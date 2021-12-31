@@ -193,75 +193,18 @@ var OrderItem = function OrderItem(props) {
   if (orderItem.ExpirationDate__c) {
     tableExpiry = orderItem.ExpirationDate__c;
   }
-  /*
-  let fn = function(e) {
-      e.frameworkDetail = {};
-      let currentTargetDataset = e.currentTarget.dataset || {};
-      let targetDataset = e.target.dataset || {};
-          if (currentTargetDataset.action == "toggle-notes" || currentTargetDataset.action == "save-order-item") {
-          e.frameworkDetail = objectCombiner(currentTargetDataset, targetDataset);
-          
-          //console.log(e.type);
-          if (e.type == "change") {
-              e.frameworkDetail.action = "save-order-item";//e.currentTarget.dataset.action;
-          }
-          else if (e.type == "click") {
-              if (targetDataset.whichNotes) {
-                  console.log(targetDataset);
-                  if (currentTargetDataset.action == "toggle-notes") {
-                      e.frameworkDetail.action = currentTargetDataset.action;
-                  }
-                  else {
-                      console.log(targetDataset.whichNotes);
-                      e.frameworkDetail.action = "nothing";
-                      console.log("f");
-                  }
-              }
-              /*else {
-                  console.log(targetDataset.whichNotes);
-                  e.frameworkDetail.action = "nothing";
-                  console.log("f");
-              }*/
-  //}
-  //}
-  //};
-
 
   var fn = function fn(e) {
     var currentTargetDataset = e.currentTarget.dataset || {};
     var targetDataset = e.target.dataset || {};
-    e.frameworkDetail = objectCombiner(currentTargetDataset, targetDataset); //console.log(e.type);
+    e.frameworkDetail = objectCombiner(currentTargetDataset, targetDataset);
 
     if (e.type == "change") {
-      e.frameworkDetail.action = "save-order-item"; //e.currentTarget.dataset.action;
+      e.frameworkDetail.action = "save-order-item";
     } else if (e.type == "click") {
-      //console.log("triggered");
       e.frameworkDetail.action = "toggle-notes";
     }
   };
-  /*
-  let fn = function(e) {
-      let currentTargetDataset;
-      let targetDataset;
-        if (e.currentTarget.dataset) {
-          currentTargetDataset = e.currentTarget.dataset;
-      }
-      else {
-          currentTargetDataset = {};
-      }
-      if (e.target.dataset) {
-          targetDataset = e.target.dataset;
-      }
-      else {
-          targetDataset = {};
-      }
-        e.frameworkDetail = objectCombiner(currentTargetDataset, targetDataset);
-          e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.recordId;
-      e.frameworkDetail = e.currentTarget.dataset;
-      e.action = e.currentTarget.dataset.action;
-  };*/
-  //fix the bellow id field so that the id isnt also in the class
-
 
   return vNode("div", {
     "class": "orderItemBox"

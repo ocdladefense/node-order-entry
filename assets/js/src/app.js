@@ -52,8 +52,8 @@ addEvent("loadorder", switchOrder, setUpAutoComplete);//document.add-event-liste
 addEvent("save-order-item", saveOrderItem, function() {
     setUpAutoComplete();
 });
-addEvent("toggle-notes", toggleNotes);
-addEvent("nothing", nothing);
+addEvent("toggle-notes", toggleNotes, setUpAutoComplete);
+addEvent("nothing", nothing);//unused?
 
 function nothing() {
     console.log("nothing");
