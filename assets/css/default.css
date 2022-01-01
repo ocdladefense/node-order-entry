@@ -60,6 +60,11 @@
 	display: contents;
 }
 
+.autoItem {
+	background-color: white;
+	float: left;
+}
+
 
 .styled-active {
     border: 0;

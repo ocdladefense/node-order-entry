@@ -59,7 +59,7 @@ class ExampleModule extends Module {
 	public function getContacts() {
 		$api = $this->loadForceApi();
 
-		$results = $api->query("SELECT Contact__r.Name, Id FROM Event__c WHERE Id = '$eventId'");
+		$results = $api->query("SELECT Name, Id FROM Contact");
 
 		$records = $results->getRecords();
 		

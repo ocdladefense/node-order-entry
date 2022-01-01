@@ -26,31 +26,29 @@ function switchOrder(props) {
 }
 
 function toggleNotes(props) {
-  //let mainElementId = props.recordId;
-  var fieldClass = " .order-item-note-" + props.whichNotes; //can probobly remove these and have them dirrectly below
-
+  var fieldClass = " .order-item-note-" + props.whichNotes;
   var buttonClass = " .note-button-" + props.whichNotes;
   var field = document.querySelector("#id-" + props.recordId + fieldClass);
   var button = document.querySelector("#id-" + props.recordId + buttonClass);
-  console.log(field);
-  console.log(button);
 
-  if (field) {
-    var notNotes = document.querySelector(".id-" + props.recordId + " .not-notes").classList;
+  if (!field) {
+    return false;
+  }
 
-    if (field.classList.contains("displayed")) {
-      notNotes.add("displayed");
-      field.classList.remove("displayed");
-      button.classList.remove("styled-inactive");
-    } else {
-      for (var i = 1; i <= 3; i++) {
-        document.querySelector(".id-" + props.recordId + " .note-button-" + i).classList.remove("styled-inactive");
-        document.querySelector(".id-" + props.recordId + " .order-item-note-" + i).classList.remove("displayed");
-      }
+  var notNotes = document.querySelector(".id-" + props.recordId + " .not-notes").classList;
 
-      notNotes.remove("displayed");
-      button.classList.add("styled-inactive");
-      field.classList.add("displayed");
+  if (field.classList.contains("displayed")) {
+    notNotes.add("displayed");
+    field.classList.remove("displayed");
+    button.classList.remove("styled-inactive");
+  } else {
+    for (var i = 1; i <= 3; i++) {
+      document.querySelector(".id-" + props.recordId + " .note-button-" + i).classList.remove("styled-inactive");
+      document.querySelector(".id-" + props.recordId + " .order-item-note-" + i).classList.remove("displayed");
     }
+
+    notNotes.remove("displayed");
+    button.classList.add("styled-inactive");
+    field.classList.add("displayed");
   }
 }
