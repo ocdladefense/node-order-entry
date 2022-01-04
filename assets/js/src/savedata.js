@@ -1,6 +1,6 @@
 /** @jsx vNode */
 
-export { saveOrderItem, setUpAutoComplete };
+export { saveOrderItem, setUpAutoComplete, addNewOrderItem };
 
 import { vNode, updateElement, changeMainContainer } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
@@ -29,23 +29,14 @@ function saveOrderItem(props) {
     let theList = getOrders();
     let singleOrder = getOrderById(props.orderitemId);
     let orderItems = getOrderItems(props.orderitemId);
-    let HomeFullNodeHolder;
-    let OrderItemHolder;
+
 
 
     fillOrderItemData(obj);
 
-    //return Promise.resolve();
     return Promise.all([theList, singleOrder, orderItems]).then(function(data) {
-        //console.log("promise finished"); //This stuff is just to resolve an empty promise error
-        //return <SmallOrderList orders={theList} />;
-        //HomeFullNodeHolder = <HomeFullNode orders={data[0]} order={data[1]} orderItems={data[2]} />;
-        //console.log(HomeFullNodeHolder);
-        //OrderItemHolder = <OrderItem order={data[1]} orderItem={obj} />;
 
         return <LargeOrderList orders={data[0]} />;
-        //return HomeFullNodeHolder;
-        //return <OrderItems orders={data[1]} order={data[2]} orderItems={data[0]} />;
     });
 
 }
@@ -54,12 +45,6 @@ function saveOrderItem(props) {
 //Id, Product2Id, Note_1__c, Note_2__c, Note_3__c, FirstName__c, LastName__c, ExpirationDate__c, Product2.Name, UnitPrice, Quantity, TotalPrice FROM OrderItem WHERE OrderId = '$Id'"
 
 function extractOrderItemData(recordId) {
-    //let contact = document.querySelector("#id-" + recordId + " .contact")[0];
-    //let row = document.getElementById(recordId);
-
-    //let contact = row.getElementsByClassName("contact")[0];
-    //let contactId = "0030a00001V0uTWAAZ"; //Elijah R.L. Brown
-    //let productId = "01t0a000004Ov6bAAC"; //CLE Archive: 2015 House Bill 2320 (Package)
 
     //only gets the first one?
     let contact = document.querySelector("#id-" + recordId + " .contact");
@@ -128,7 +113,10 @@ function save(obj) {
     //fetch take data, put into json, returns promise?
 
     let demoErrors = false;
-    let demoResponse = {Id:"000xtestbid24322"};
+    let demoResponse = {Id:jsIdGenerator()};
+
+    //if need to update
+    //call update
 
     if (demoErrors) {
         return Promise.reject("salesforce has encountered an error");
@@ -138,6 +126,74 @@ function save(obj) {
         return Promise.resolve({Id:"foobar"});
     }
 
+}
+
+function addNewOrderItem(props) {
+  //get new id
+  //jsIdGenerator
+  //if (position == -1) {
+  //  position = orderItems.length;
+  //}
+  //rerender, but now orderItems have a new item in it
+  //
+
+  //let obj = {"Id":jsIdGenerator(), "ContactName":"", "Product2Name":"", "ContactId":"", "Product2Id":"", "Description":"", "Note_1__c":"", "Note_2__c":"", "Note_3__c":"", "ExpirationDate__c":"current date?", "UnitPrice":0, "Quantity":0, "TotalPrice":0};
+  //add new one to list first
+  //fillOrderItemData(obj); ???
+
+  console.log(props);
+  changeMainContainer("main");
+
+  let theList = getOrders();
+  let singleOrder = getOrderById(props.recordId);
+  let orderItems = getOrderItems(props.recordId);
+
+  //orderItems = orderItems
+  
+  let vNodes = Promise.all([orderItems, theList, singleOrder]).then(function(data) {
+    
+    let newOrderItem = { 
+      ExpirationDate__c: "2022-01-04",
+      FirstName__c: null,
+      Id: jsIdGenerator(),
+      LastName__c: null,
+      Note_1__c: null,
+      Note_2__c: null,
+      Note_3__c: null,
+      Product2: {attributes: {}, Name: '2014 Defending the Modern DUII - Material Hard Copy & CD/Audio CD'},
+      Product2Id: "01t0a000004Ov6JAAS",
+      Quantity: 1,
+      TotalPrice: 0,
+      UnitPrice: 0,
+      attributes: {type: 'OrderItem', url: '/services/data/v49.0/sobjects/OrderItem/8028D000000MBZfQAO'}
+    };
+    //orderItems[orderItems.length] = 
+    //console.log(data[0].push(newOrderItem));
+    //console.log(data[0][data[0].length]);
+    data[0].push(newOrderItem);
+
+    return <HomeFullNode orders={data[1]} order={data[2]} orderItems={data[0]} />;
+  });
+  return vNodes;
+}
+//rerenders everything for now, but now it appends another object to props.order
+
+function deleteOrderItem(id) {
+  //orders[id] = orders[position + 1]?
+}
+
+function updateOrderItem(id, newObj) {
+  //might not need potion could just use id?
+  //check and see if it is a big change or small
+  //if (isBigChange) {
+    //deleteOrderItem(position);
+    //addNewOrderItem(id);
+  //}
+}
+
+function jsIdGenerator() {
+  //obviously this will need to be randomized and checked against other ids
+  return "id-00JSID3334343";
 }
 
 var contactNames = [{Id:"0030a00001V0uTWAAZ", Name:"Elijah R.L. Brown"}, {Id:"0030a00001gICbsAAG", Name:"Mary Brownville"}, {Id:"0030a00001edgHuAAI", Name:"Edward Piper"}, {Id:"0030a00001V0uqmAAB", Name:"Zoe E. Bayham"}];

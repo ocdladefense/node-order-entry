@@ -80,13 +80,41 @@ class ExampleModule extends Module {
 
 
 	public function getJsonListEntries($id) {
-			$api = $this->loadForceApi();
+		$api = $this->loadForceApi();
 
-			$results = $api->query("SELECT Name, Id, Start_date__c FROM Event__c WHERE Id = '$id'");
+		$results = $api->query("SELECT Name, Id, Start_date__c FROM Event__c WHERE Id = '$id'");
 
-			$records = $results->getRecords();
+		$records = $results->getRecords();
+	
+		return $records[0];
+	}
+
+	public function orderUpdate($id) {
+		//route for this
+		//look at sandbox and check
 		
-			return $records[0];
+		$api = $this->loadForceApi();
+
+		$record = new stdClass();
+
+		//will need to get all these records by using the js id to search for the values?
+		//check if it has a js id then
+		$record->OrderId="8018D0000006dmBQAQ"; //the order id
+		$record->Id=null; //if its a new order item
+		$record->ContactName="Elijah R.L. Brown";
+		$record->Product2Name="CLE Archive: 2015 House Bill 2320 (Package)";
+		$record->ContactId="0030a00001V0uTWAAZ";
+		$record->Product2Id="01t0a000004Ov6bAAC";
+		$record->Description="";
+		$record->Note_1__c="";
+		$record->Note_2__c="";
+		$record->Note_3__c="";
+		$record->ExpirationDate__c="";
+		$record->UnitPrice=0;
+		$record->Quantity=0;
+		$record->TotalPrice=0;
+		
+		$results = $api->upsert("OrderItem", $record);
 	}
 
 

@@ -66,6 +66,7 @@ const OrderListOrder = function(props) {
         e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.recordId;
         e.frameworkDetail = e.currentTarget.dataset;
         e.action = e.currentTarget.dataset.action;
+        console.log(e.orderId);
     };
 
     let classString = props.order.Status == 'Draft' ? 'yellow-highlight' : 'green-highlight';
@@ -91,7 +92,7 @@ const OrderListOrder = function(props) {
 const OrderItems = function(props) {
     let order = props.order;
 
-    let orderItems = props.orderItems;
+    let orderItems = props.orderItems;//?why are we not using this
 
 
     //let fn = function(e) {
@@ -100,14 +101,25 @@ const OrderItems = function(props) {
     //};
 
     let theList = <OrderItemList order={props.order} orderItems={props.orderItems} />;
-
+    
     if (order) {
         order = props.order[0];
+        
         let contactName = "NA";//order.BillToContact ? props.order.BillToContact.Name : "NA";
         if (order.BillToContact) {
             contactName = order.BillToContact.Name;
         }
         
+        let fn = function(e) {
+            let currentTargetDataset = e.currentTarget.dataset || {};
+            let targetDataset = e.target.dataset || {};
+    
+            e.frameworkDetail = objectCombiner(currentTargetDataset, targetDataset);
+            if (e.type == "click") {
+                e.frameworkDetail.action = "add-order-item";
+            }
+            
+        };
         
         return(
             <div>
@@ -120,6 +132,11 @@ const OrderItems = function(props) {
                     </div>
                     <h1>{" " + contactName}</h1>
                     <h4>{order.TotalAmount}</h4>
+                    <div>
+                        <button class="add-order-button" type="button" onclick={fn} data-action="add-order-item" data-record-id={order.Id} >
+                            Add Order Item
+                        </button>
+                    </div>
                     {theList}
                 </div>
             </div>

@@ -21,9 +21,13 @@
      "orderentry/orderitems/%id":{
       "callback":"getOrderItems",
       "content-type":"application/json"
-   },
+      },
       "example/details/%id":{
          "callback":"getJsonListEntries",
+        "content-type":"application/json"
+      },
+      "orderentry/createNewOrder/%id":{
+         "callback":"orderUpdate",
         "content-type":"application/json"
       }
 

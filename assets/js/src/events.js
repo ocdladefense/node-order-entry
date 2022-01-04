@@ -16,7 +16,6 @@ function switchOrder(props) {
 
     changeMainContainer("main");
 
-
     let theList = getOrders();
     let singleOrder = getOrderById(props.recordId);
     let orderItems = getOrderItems(props.recordId);

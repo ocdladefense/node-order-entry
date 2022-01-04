@@ -58,6 +58,7 @@ var OrderListOrder = function OrderListOrder(props) {
     e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.recordId;
     e.frameworkDetail = e.currentTarget.dataset;
     e.action = e.currentTarget.dataset.action;
+    console.log(e.orderId);
   };
 
   var classString = props.order.Status == 'Draft' ? 'yellow-highlight' : 'green-highlight';
@@ -83,7 +84,8 @@ var OrderListOrder = function OrderListOrder(props) {
 
 var OrderItems = function OrderItems(props) {
   var order = props.order;
-  var orderItems = props.orderItems; //let fn = function(e) {
+  var orderItems = props.orderItems; //?why are we not using this
+  //let fn = function(e) {
   //    e.orderId = e.currentTarget.dataset && e.currentTarget.dataset.orderId;
   //    e.frameworkDetail = [e.frameworkDetail, e.orderId];
   //};
@@ -101,12 +103,28 @@ var OrderItems = function OrderItems(props) {
       contactName = order.BillToContact.Name;
     }
 
+    var fn = function fn(e) {
+      var currentTargetDataset = e.currentTarget.dataset || {};
+      var targetDataset = e.target.dataset || {};
+      e.frameworkDetail = objectCombiner(currentTargetDataset, targetDataset);
+
+      if (e.type == "click") {
+        e.frameworkDetail.action = "add-order-item";
+      }
+    };
+
     return vNode("div", null, vNode("div", null, vNode("div", null, vNode("h1", {
       style: "float:left;"
     }, "Order " + order.OrderNumber + ":")), vNode("div", {
       "class": "yellow-highlight",
       style: "float:right;"
-    }, "Created " + order.EffectiveDate + ", by NEED THIS DATA"), vNode("h1", null, " " + contactName), vNode("h4", null, order.TotalAmount), theList));
+    }, "Created " + order.EffectiveDate + ", by NEED THIS DATA"), vNode("h1", null, " " + contactName), vNode("h4", null, order.TotalAmount), vNode("div", null, vNode("button", {
+      "class": "add-order-button",
+      type: "button",
+      onclick: fn,
+      "data-action": "add-order-item",
+      "data-record-id": order.Id
+    }, "Add Order Item")), theList));
   } else {
     console.log("right side not rendered");
     return vNode("div", null, "Right side not rendered");

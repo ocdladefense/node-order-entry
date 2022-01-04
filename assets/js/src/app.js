@@ -12,7 +12,7 @@ import { getOrders, getOrderById, getOrderItems } from './data.js';
 import { HomeFullNode } from './components.js';
 
 import { switchOrder, toggleNotes } from './events.js';
-import { saveOrderItem, setUpAutoComplete } from './savedata.js';
+import { saveOrderItem, setUpAutoComplete, addNewOrderItem } from './savedata.js';
 
 
 
@@ -54,6 +54,7 @@ addEvent("save-order-item", saveOrderItem, function() {
 });
 addEvent("toggle-notes", toggleNotes, setUpAutoComplete);
 addEvent("nothing", nothing);//unused?
+addEvent("add-order-item", addNewOrderItem, setUpAutoComplete);
 
 function nothing() {
     console.log("nothing");
