@@ -2,15 +2,11 @@
 export { saveOrderItem, setUpAutoComplete, addNewOrderItem };
 import { vNode, updateElement, changeMainContainer } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
-import { OrderItems, HomeFullNode, SmallOrderList, OrderItem, LargeOrderList } from './components.js';
 import { getOrders, getOrderById, getOrderItems } from './data.js';
+import { OrderItems, HomeFullNode, SmallOrderList, OrderItem, LargeOrderList } from './components.js';
 
 function saveOrderItem(props) {
-  //console.log("called save");
-  //extract, autofill, validateBeforeSave, save
-  //{"orderId":order.Id, "orderItem":orderItem.Id}
-  var obj = extractOrderItemData(props.recordId); //console.log(obj);
-
+  var obj = extractOrderItemData(props.recordId);
   obj = autofill(obj);
 
   if (validateBeforeSave(obj)) {
@@ -30,11 +26,10 @@ function saveOrderItem(props) {
       orders: data[0]
     });
   });
-} //Id, Product2Id, Note_1__c, Note_2__c, Note_3__c, FirstName__c, LastName__c, ExpirationDate__c, Product2.Name, UnitPrice, Quantity, TotalPrice FROM OrderItem WHERE OrderId = '$Id'"
-
+}
 
 function extractOrderItemData(recordId) {
-  //only gets the first one?
+  //TODO: right now it only gets the first one?
   var contact = document.querySelector("#id-" + recordId + " .contact");
   var product = document.querySelector("#id-" + recordId + " .product");
   var contactId = document.querySelector("#id-" + recordId + " .contactId");
@@ -77,9 +72,6 @@ function extractOrderItemData(recordId) {
 }
 
 function fillOrderItemData(obj) {
-  //{"Id":recordId, "Product2Id":productId, "Contact__c":contactId, "Description":descriptionValue, "Note_1__c":note1Value, "Note_2__c":note2Value, "Note_3__c":note3Value, "ExpirationDate__c":expirationValue, "Product2Name":productValue, "UnitPrice":unitpriceValue, "Quantity":quantityValue, "TotalPrice":subtotalValue};
-  //console.log(obj["Id"]);
-  //let row = document.getElementById(obj["Id"]);
   document.querySelector("#id-" + obj["Id"] + " .contact").value = obj["ContactName"];
   document.querySelector("#id-" + obj["Id"] + " .expiration").value = obj["ExpirationDate__c"];
   document.querySelector("#id-" + obj["Id"] + " .product").value = obj["Product2Name"];
@@ -106,7 +98,7 @@ function validateBeforeSave(obj) {
 }
 
 function save(obj) {
-  //fetch take data, put into json, returns promise?
+  //fetch takes data, put into json, returns promise?
   var demoErrors = false;
   var demoResponse = {
     Id: jsIdGenerator()
@@ -173,8 +165,7 @@ function addNewOrderItem(props) {
     });
   });
   return vNodes;
-} //rerenders everything for now, but now it appends another object to props.order
-
+}
 
 function deleteOrderItem(id) {//orders[id] = orders[position + 1]?
 }
@@ -217,14 +208,11 @@ var productNames = [{
 }, {
   Id: "01t0a000004Ov6qAAC",
   Name: "Ardent Advocate 2016–Nonmember Lawyer"
-}]; //var currentIds = [];
-
-window.setUpAutoComplete = setUpAutoComplete;
+}]; //window.setUpAutoComplete = setUpAutoComplete;
 
 function setUpAutoComplete() {
-  console.log("auto"); //await new Promise(r => setTimeout(r, 1000)); //a promise . then would probably be better
-
-  var arrayOfElements = document.getElementsByClassName("autocomplete"); //console.log(arrayOfElements);
+  console.log("auto");
+  var arrayOfElements = document.getElementsByClassName("autocomplete");
 
   for (var i = 0; i < arrayOfElements.length; i++) {
     var mainElementId = arrayOfElements.item(i).id;
@@ -380,7 +368,3 @@ function autocomplete(inp, arr) {
     closeAllLists(e.target);
   });
 }
-/*initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values:*/
-//autocomplete(document.getElementById("experation"), productNames);
-///getstufflike price based off of product id, giving quantity totalrpice 
-//function called update total price, called here and in events where we look for updated text
