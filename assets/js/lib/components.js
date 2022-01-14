@@ -82,7 +82,7 @@ var OrderItems = function OrderItems(props) {
   var theList = vNode(OrderItemList, {
     order: props.order,
     orderItems: props.orderItems
-  });
+  }); //console.log(order);
 
   if (order) {
     order = props.order[0];
@@ -107,12 +107,14 @@ var OrderItems = function OrderItems(props) {
     }, "Order " + order.OrderNumber + ":")), vNode("div", {
       "class": "yellow-highlight",
       style: "float:right;"
-    }, "Created " + order.EffectiveDate + ", by NEED THIS DATA"), vNode("h1", null, " " + contactName), vNode("h4", null, order.TotalAmount), vNode("div", null, vNode("button", {
+    }, "Created " + order.EffectiveDate + ", by NEED THIS DATA"), vNode("h1", null, " " + contactName), vNode("h4", null, order.TotalAmount), vNode("div", {
+      "class": "fixed"
+    }, vNode("button", {
       "class": "add-order-button",
       type: "button",
       onclick: fn,
       "data-action": "add-order-item",
-      "data-record-id": order.Id
+      "data-orderitem-id": order.Id
     }, "Add Order Item")), theList));
   } else {
     console.log("right side not rendered");
@@ -208,7 +210,11 @@ var OrderItem = function OrderItem(props) {
     if (e.type == "change") {
       e.frameworkDetail.action = "save-order-item";
     } else if (e.type == "click") {
-      e.frameworkDetail.action = "toggle-notes";
+      if (targetDataset.action == "delete-order-item") {
+        e.frameworkDetail.action = "delete-order-item";
+      } else if (targetDataset.action == "toggle-notes") {
+        e.frameworkDetail.action = "toggle-notes";
+      }
     }
   };
 
@@ -220,15 +226,8 @@ var OrderItem = function OrderItem(props) {
     onchange: fn,
     onclick: fn,
     "data-orderitem-id": order[0].Id,
-    "data-record-id": orderItem.Id,
-    "data-action": "save-order-item"
+    "data-record-id": orderItem.Id
   }, vNode("div", {
-    "class": "order-actions order-item",
-    style: "float:left;"
-  }, vNode("a", {
-    target: "_blank",
-    "class": "marginMaker2"
-  }, "Remove Order Item")), vNode("div", {
     "class": "order-note-buttons order-item",
     style: "float:left;"
   }, vNode("button", {
@@ -252,6 +251,16 @@ var OrderItem = function OrderItem(props) {
     "data-which-notes": 3,
     "data-action": "toggle-notes"
   }, "Toggle Note 3")), vNode("div", {
+    "class": "order-actions order-item",
+    style: "float:right;"
+  }, vNode("button", {
+    "class": "marginMaker2 styled-active",
+    type: "trashButton",
+    "data-action": "delete-order-item"
+  }, "Delete Order ", vNode("i", {
+    id: "trashButtonIcon",
+    "class": "fas fa-trash"
+  }))), vNode("div", {
     "class": "not-notes hidden displayed"
   }, vNode("div", {
     "class": "order-actions order-item order-item-contact",

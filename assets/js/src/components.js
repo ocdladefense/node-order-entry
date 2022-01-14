@@ -86,6 +86,7 @@ const OrderItems = function(props) {
     let order = props.order;
     let theList = <OrderItemList order={props.order} orderItems={props.orderItems} />;
     
+    //console.log(order);
     if (order) {
         order = props.order[0];
         
@@ -103,7 +104,7 @@ const OrderItems = function(props) {
                 e.frameworkDetail.action = "add-order-item";
             }
         };
-        
+
         return(
             <div>
                 <div>
@@ -115,8 +116,8 @@ const OrderItems = function(props) {
                     </div>
                     <h1>{" " + contactName}</h1>
                     <h4>{order.TotalAmount}</h4>
-                    <div>
-                        <button class="add-order-button" type="button" onclick={fn} data-action="add-order-item" data-record-id={order.Id} >
+                    <div class="fixed">
+                        <button class="add-order-button" type="button" onclick={fn} data-action="add-order-item" data-orderitem-id={order.Id} >
                             Add Order Item
                         </button>
                     </div>
@@ -217,32 +218,41 @@ const OrderItem = function(props) {
             e.frameworkDetail.action = "save-order-item";
         }
         else if (e.type == "click") {
-            e.frameworkDetail.action = "toggle-notes";
+            if (targetDataset.action == "delete-order-item") {
+                e.frameworkDetail.action = "delete-order-item";
+            }
+            else if (targetDataset.action == "toggle-notes") {
+                e.frameworkDetail.action = "toggle-notes";
+            }
+            
         }
     };
     
     return (
         <div class="orderItemBox">
-            <div class={"autocomplete id-" + orderItem.Id} id={"id-" + orderItem.Id} onchange={fn} onclick={fn} data-orderitem-id={order[0].Id} data-record-id={orderItem.Id} data-action="save-order-item">
-                <div class="order-actions order-item" style="float:left;">
-                    <a target="_blank" class="marginMaker2">Remove Order Item</a>
-                </div>
+            <div class={"autocomplete id-" + orderItem.Id} id={"id-" + orderItem.Id} onchange={fn} onclick={fn} data-orderitem-id={order[0].Id} data-record-id={orderItem.Id}>
                 <div class="order-note-buttons order-item" style="float:left;">
-                    <button class="note-button-1 styled-active" type="button" data-which-notes={1}  data-action="toggle-notes">
+                    <button class="note-button-1 styled-active" type="button" data-which-notes={1} data-action="toggle-notes">
                         Toggle Note 1
                     </button>
                 </div>
                 <div class="order-note-buttons order-item" style="float:left;">
-                    <button class="note-button-2 styled-active" type="button" data-which-notes={2}  data-action="toggle-notes">
+                    <button class="note-button-2 styled-active" type="button" data-which-notes={2} data-action="toggle-notes">
                         Toggle Note 2
                     </button>
                 </div>
                 <div class="order-note-buttons order-item">
-                    <button class="note-button-3 styled-active" type="button" data-which-notes={3}  data-action="toggle-notes">
+                    <button class="note-button-3 styled-active" type="button" data-which-notes={3} data-action="toggle-notes">
                         Toggle Note 3
                     </button>
                 </div>
                 
+                <div class="order-actions order-item" style="float:right;">
+                    <button class="marginMaker2 styled-active" type="trashButton" data-action="delete-order-item">
+                        Delete Order <i id="trashButtonIcon" class="fas fa-trash"></i>
+                    </button>
+                </div>
+
                 <div class="not-notes hidden displayed">
                     <div class="order-actions order-item order-item-contact" style="float:left;">
                         <p>Contact</p>

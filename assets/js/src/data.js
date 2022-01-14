@@ -1,4 +1,4 @@
-export { getOrders, getOrderById, getOrderItems, getEventDetails, getRegistrants, getCountRegistrants };
+export { getOrders, getOrderById, getOrderItems, getEventDetails, getRegistrants, getCountRegistrants, createNewOrderEntry, deleteOrderEntry, createNewOrderEntryNoId };
 
 
 
@@ -38,5 +38,20 @@ function getCountRegistrants() {
     .then(data => {return data;});
 }
 
+function createNewOrderEntry(id) {
+    return fetch("/orderentry/createneworder/" + id)
+    .then(resp => resp.json())
+    .then(data => {return data;});
+}
 
+function createNewOrderEntryNoId() {
+    return fetch("/orderentry/createneworder")
+    .then(resp => resp.json())
+    .then(data => {return data;});
+}
 
+function deleteOrderEntry(id) {
+    return fetch("/orderentry/deleteOrder/" + id)
+    .then(resp => resp.json())
+    .then(data => {return data;});
+}

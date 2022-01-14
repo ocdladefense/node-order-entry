@@ -17,7 +17,7 @@ function switchOrder(props) {
 
     let theList = getOrders();
     let singleOrder = getOrderById(props.recordId);
-    let orderItems = getOrderItems(props.recordId);
+    let orderItems = getOrderItems(props.recordId); 
     
     let vNodes = Promise.all([orderItems, theList, singleOrder]).then(function(data) {
         console.log("promise finished");

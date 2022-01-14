@@ -65,6 +65,10 @@
 	float: left;
 }
 
+div.fixed {
+	position: fixed;
+	right: 5px;
+}
 
 .styled-active {
     border: 0;

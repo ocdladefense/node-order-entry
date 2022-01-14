@@ -1,4 +1,4 @@
-export { getOrders, getOrderById, getOrderItems, getEventDetails, getRegistrants, getCountRegistrants };
+export { getOrders, getOrderById, getOrderItems, getEventDetails, getRegistrants, getCountRegistrants, createNewOrderEntry, deleteOrderEntry, createNewOrderEntryNoId };
 
 function getOrders() {
   return fetch("/orderentry/orders").then(function (resp) {
@@ -42,6 +42,30 @@ function getRegistrants(queryId) {
 
 function getCountRegistrants() {
   return fetch("/events/eventcontactcountjson").then(function (resp) {
+    return resp.json();
+  }).then(function (data) {
+    return data;
+  });
+}
+
+function createNewOrderEntry(id) {
+  return fetch("/orderentry/createneworder/" + id).then(function (resp) {
+    return resp.json();
+  }).then(function (data) {
+    return data;
+  });
+}
+
+function createNewOrderEntryNoId() {
+  return fetch("/orderentry/createneworder").then(function (resp) {
+    return resp.json();
+  }).then(function (data) {
+    return data;
+  });
+}
+
+function deleteOrderEntry(id) {
+  return fetch("/orderentry/deleteOrder/" + id).then(function (resp) {
     return resp.json();
   }).then(function (data) {
     return data;

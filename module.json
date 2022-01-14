@@ -29,6 +29,14 @@
       "orderentry/createNewOrder/%id":{
          "callback":"orderUpdate",
         "content-type":"application/json"
+      },
+      "orderentry/createneworder":{
+         "callback":"orderUpdate",
+        "content-type":"application/json"
+      },
+      "orderentry/deleteOrder/%id":{
+         "callback":"orderDelete",
+        "content-type":"application/json"
       }
 
     }
