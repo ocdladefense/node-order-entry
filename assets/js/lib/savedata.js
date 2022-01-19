@@ -1,35 +1,64 @@
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 /** @jsx vNode */
-export { saveOrderItem, setUpAutoComplete, addNewOrderItem, deleteOrderItem };
+export { saveOrderItem, setUpAutoComplete, addNewOrderItem, deleteOrderItem, addNewOrderItemButtonPressed };
 import { vNode, updateElement, changeMainContainer } from '../../../node_modules/@ocdladefense/view/view.js';
 import { CACHE, HISTORY } from '../../../node_modules/@ocdladefense/view/cache.js';
 import { getOrders, getOrderById, getOrderItems, createNewOrderEntry, deleteOrderEntry } from './data.js';
 import { OrderItems, HomeFullNode, SmallOrderList, OrderItem, LargeOrderList } from './components.js';
 
 function saveOrderItem(props) {
+  var savedOrderItem;
   var obj = extractOrderItemData(props.recordId);
   obj = autofill(obj);
 
   if (validateBeforeSave(obj)) {
-    save(obj, props) //.then(updateElement)
-    ["catch"](function (e) {
+    savedOrderItem = save(obj, props)["catch"](function (e) {
       console.log("error message " + e);
-    });
+    }); //take the id, return from server, if neccessary update the effected row (could use regular dom methods)
   }
 
+  savedOrderItem.then(function (orderItem) {
+    return null; //dom operations, return promise of vnodes, ect
+  });
+  /*
   changeMainContainer("bottomListOrders");
-  var theList = getOrders();
-  var singleOrder = getOrderById(props.orderitemId);
-  var orderItems = getOrderItems(props.orderitemId);
-  fillOrderItemData(obj);
+  let theList = getOrders();
+  let singleOrder = getOrderById(props.orderitemId);
+  let orderItems = getOrderItems(props.orderitemId);
+  fillOrderItemData(obj);*/
+
+  return null;
   return Promise.all([theList, singleOrder, orderItems]).then(function (data) {
     return vNode(LargeOrderList, {
       orders: data[0]
     });
   });
+} //obj stores all the values in the fields of the order item, props is giong to contain recordId and orderId (and data-action?)
+
+
+function save(obj, props) {
+  //fetch takes data, put into json, returns promise?
+  var demoErrors = false;
+  var demoResponse = {
+    Id: jsIdGenerator()
+  };
+
+  if (demoErrors) {
+    return Promise.reject("salesforce has encountered an error"); //throw new Error("salesforce has encountered an error");
+  } //we have the info to know which row produced the event, 
+
+
+  return fetch('/orderentry/createneworder/' + props.orderitemId, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(obj)
+  }).then(function (response) {
+    return response.json();
+  }).then(function (data) {
+    console.log('Success:', data);
+    return data;
+  }); //deleteOrderItem(props);
 }
 
 function extractOrderItemData(recordId) {
@@ -58,6 +87,15 @@ function extractOrderItemData(recordId) {
   var unitpriceValue = unitprice.value;
   var quantityValue = quantity.value;
   var subtotalValue = subtotal.value;
+
+  if (contactIdValue == "unasigned") {
+    for (var i = 0; i < contactNames.length; i++) {
+      if (contactNames[i].Name == contactValue) {
+        contactIdValue = contactNames[i].Id;
+      }
+    }
+  }
+
   return {
     "Id": recordId,
     "ContactName": contactValue,
@@ -101,74 +139,16 @@ function validateBeforeSave(obj) {
   return true;
 }
 
-function save(obj, props) {
-  //fetch takes data, put into json, returns promise?
-  var demoErrors = false;
-  var demoResponse = {
-    Id: jsIdGenerator()
-  };
-  var index = 0; //index = data[0].findIndex(object => {
-  //    return object.Id === props.recordId;
-  //});
-  //if name is diffrent ...
-  //let theList = getOrders();
-  //let singleOrder = getOrderById(props.orderitemId);
+function addNewOrderItemButtonPressed(props) {
+  //vNode stuff to render blank order item
+  changeMainContainer("main");
+  var obj = {};
 
-  var orderItems = getOrderItems(props.orderitemId);
-  var vNodes = Promise.all([orderItems]).then(function (data) {
-    index = data[0].findIndex(function (object) {
-      return object.Id === props.recordId;
-    });
-    console.log(data[0][index]);
-
-    if (data[0][index].Product2Id != obj.Product2Id) {
-      addNewOrderItem(props, index);
-      deleteOrderItem(props); //pass index here too?
-    } else {//somekind save function or updating the small issues
-    }
-  });
-
-  if (demoErrors) {
-    return Promise.reject("salesforce has encountered an error"); //throw new Error("salesforce has encountered an error");
-  } else {
-    console.log("saved");
-    return Promise.resolve({
-      Id: "foobar"
-    });
-  }
-}
-
-function addNewOrderItem(props) {
-  var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-  changeMainContainer("main"); //obj = extractOrderItemData(props.recordId);
-
-  var obj = {
-    Id: "test",
-    Prod: "Run",
-    Nope: "rrrrrrrrrrrrrrrrrrrrrrrr"
-  };
-  /*
-  postData('/orderentry/createneworder', obj)
-      .then(data => {
-      console.log(data); // JSON data parsed by `data.json()` call
-      //createNewOrderEntry(props.orderitemId).then();
-  });*/
-
-  fetch('/orderentry/createneworder', {
-    method: 'POST',
-    // or 'PUT'
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(obj)
-  }).then(function (response) {
-    return response.json();
-  }).then(function (data) {
-    console.log('Success:', data);
-  })["catch"](function (error) {
-    console.error('Error4:', error);
-  }); //createNewOrderEntry(props.orderitemId).then();
+  if (props.recordId) {
+    obj = extractOrderItemData(props.recordId);
+  } //createNewOrderEntry(props.orderitemId).then();
   //orderUpdate($id = "8018D0000006dm6QAA")
+
 
   var theList = getOrders();
   var singleOrder = getOrderById(props.orderitemId);
@@ -209,11 +189,67 @@ function addNewOrderItem(props) {
       orderItems: data[0]
     });
   });
+  console.log("end of proceess");
   return vNodes;
 }
 
+function addNewOrderItem(obj, props) {
+  var index = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+  //changeMainContainer("main");
+  //obj = extractOrderItemData(props.recordId);
+  //console.log("orderItem Id: " + props.orderitemId);
+  fetch('/orderentry/createneworder/' + props.orderitemId, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(obj)
+  }).then(function (response) {
+    return response.json();
+  }).then(function (data) {
+    console.log('Success:', data);
+  })["catch"](function (error) {
+    console.error('Error4:', error);
+  });
+  /*
+  //createNewOrderEntry(props.orderitemId).then();
+  //orderUpdate($id = "8018D0000006dm6QAA")
+  let theList = getOrders();
+  let singleOrder = getOrderById(props.orderitemId);
+  let orderItems = getOrderItems(props.orderitemId);
+    //let listData = Promise.all([newOrderEntryProps]).then(function() {
+  //    console.log(newOrderEntryProps);
+  //    theList = getOrders();
+  //    singleOrder = getOrderById(props.recordId);
+  //    orderItems = getOrderItems(props.recordId);
+  //});
+    let vNodes = Promise.all([orderItems, theList, singleOrder]).then(function(data) {
+        let newOrderItem = { 
+          ExpirationDate__c: "2022-01-04",
+          FirstName__c: "Tester",
+          Id: jsIdGenerator(),
+          LastName__c: null,
+          Note_1__c: null,
+          Note_2__c: null,
+          Note_3__c: null,
+          Product2: {attributes: {}, Name: '2014 Defending the Modern DUII - Material Hard Copy & CD/Audio CD'},
+          Product2Id: "01t0a000004Ov6JAAS",
+          Quantity: 1,
+          TotalPrice: 0,
+          UnitPrice: 0,
+          attributes: {type: 'OrderItem', url: '/services/data/v49.0/sobjects/OrderItem/8028D000000MBZfQAO'}
+      };
+      
+        data[0].splice(index, 0, newOrderItem);
+      //data[0].push(newOrderItem);
+        return <HomeFullNode orders={data[1]} order={data[2]} orderItems={data[0]} />;
+  });
+  console.log("end of proceess");
+  return vNodes;*/
+}
+
 function deleteOrderItem(props) {
-  console.log("DELETED");
+  console.log("DELETED commented out");
   deleteOrderEntry(props.recordId);
   document.querySelector("#id-" + props.recordId).classList.add("hidden");
   ; //removes id- if it has it
@@ -242,66 +278,6 @@ function deleteOrderItem(props) {
     });
   });
   return vNodes;
-}
-
-function postData() {
-  return _postData.apply(this, arguments);
-}
-
-function _postData() {
-  _postData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-    var url,
-        data,
-        response,
-        _args = arguments;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            url = _args.length > 0 && _args[0] !== undefined ? _args[0] : '';
-            data = _args.length > 1 && _args[1] !== undefined ? _args[1] : {};
-            _context.next = 4;
-            return fetch(url, {
-              method: 'POST',
-              // *GET, POST, PUT, DELETE, etc.
-              mode: 'cors',
-              // no-cors, *cors, same-origin
-              cache: 'no-cache',
-              // *default, no-cache, reload, force-cache, only-if-cached
-              credentials: 'same-origin',
-              // include, *same-origin, omit
-              headers: {
-                'Content-Type': 'application/json' // 'Content-Type': 'application/x-www-form-urlencoded',
-
-              },
-              redirect: 'follow',
-              // manual, *follow, error
-              referrerPolicy: 'no-referrer',
-              // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-              body: JSON.stringify(data) // body data type must match "Content-Type" header
-
-            });
-
-          case 4:
-            response = _context.sent;
-            return _context.abrupt("return", response.json());
-
-          case 6:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee);
-  }));
-  return _postData.apply(this, arguments);
-}
-
-function updateOrderItem(id, newObj) {//might not need potion could just use id?
-  //check and see if it is a big change or small
-  //if (isBigChange) {
-  //deleteOrderItem(position);
-  //addNewOrderItem(id);
-  //}
 }
 
 function jsIdGenerator() {

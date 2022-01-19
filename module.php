@@ -95,33 +95,50 @@ class ExampleModule extends Module {
 		$req = $this->getRequest();
 		$body = $req->getBody();
 		$Id = $body->Id;
-		//get body method
-		//var_dump($Id);
-		return $body;
-		/*
-		$record = new stdClass();
-
-		//will need to get all these records by using the js id to search for the values?
-		//check if it has a js id then
-		$record->OrderId=$id; //the order id
-		$record->Id=null;//"8028D000000MBZfQAO"; //if its a new order item //8028D000000MBZfQAO
-		//$record->ContactName="Elijah R.L. Brown";
-		//$record->Product2Name="CLE Archive: 2015 House Bill 2320 (Package)";
-		$record->Contact__c="0030a00001V0uTWAAZ";
-		//$record->Product2Id="01t0a000004Ov6bAAC";
-		$record->Description="";
-		$record->Note_1__c="";
-		$record->Note_2__c="";
-		$record->Note_3__c="";
-		//$record->ExpirationDate__c=null;
-		$record->UnitPrice=0;
-		$record->Quantity=1;
-		//$record->TotalPrice=0;
-		$record->PricebookEntryId="01u0a00000Hb0AgAAJ";
 		
-		$result = $api->upsert("OrderItem", $record);
+		
+		$record = new stdClass();
+		
 
-		return $result;*/
+		
+		$record->OrderId=$id;//"8018D0000006dmBQAQ";//$id; //the order id
+		
+		if ($Id) {
+			$record->Id=null;//"8028D000000MBZfQAO"; //if its a new order item //8028D000000MBZfQAO
+			//$record->ContactName="Elijah R.L. Brown";
+			//$record->Product2Name="CLE Archive: 2015 House Bill 2320 (Package)";
+			$record->Contact__c=$body->ContactId;
+			//$record->Product2Id="01t0a000004Ov6bAAC";
+			$record->Description=$body->Description;
+			$record->Note_1__c=$body->Note_1__c;
+			$record->Note_2__c=$body->Note_2__c;
+			$record->Note_3__c=$body->Note_3__c;
+			//$record->ExpirationDate__c=null;
+			$record->UnitPrice=$body->UnitPrice;
+			$record->Quantity=$body->Quantity;
+			//$record->TotalPrice=0;
+			$record->PricebookEntryId="01u0a00000Hb0AgAAJ";
+		} else {
+			$record->Id=null;//"8028D000000MBZfQAO"; //if its a new order item //8028D000000MBZfQAO
+			//$record->ContactName="Elijah R.L. Brown";
+			//$record->Product2Name="CLE Archive: 2015 House Bill 2320 (Package)";
+			$record->Contact__c="0030a00001V0uTWAAZ";
+			//$record->Product2Id="01t0a000004Ov6bAAC";
+			$record->Description="";
+			$record->Note_1__c="";
+			$record->Note_2__c="";
+			$record->Note_3__c="";
+			//$record->ExpirationDate__c=null;
+			$record->UnitPrice=0;
+			$record->Quantity=1;
+			//$record->TotalPrice=0;
+			$record->PricebookEntryId="01u0a00000Hb0AgAAJ";
+		}
+		
+		$result = $api->upsert("OrderItem", $record); //something happens to record
+		return $result;
+
+		//return $result; //should be result, which contains the id
 	}
 
 

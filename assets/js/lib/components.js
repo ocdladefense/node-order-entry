@@ -144,7 +144,8 @@ var OrderItem = function OrderItem(props) {
   var orderItem = props.orderItem;
   var order = props.order;
   var tableContact = "NA";
-  var tableContactId = "0030a00001V0uTWAAZ";
+  var tableContactId = "unasigned"; //"0030a00001V0uTWAAZ"; //TODO: this needs to init to whatever it should be
+
   var tableExpiry = "NA";
   var tableProduct = "NA";
   var tableProductId = "01t0a000004Ov6bAAC";

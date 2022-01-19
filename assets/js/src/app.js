@@ -7,7 +7,7 @@ import { getOrders, getOrderById, getOrderItems } from './data.js';
 import { HomeFullNode } from './components.js';
 
 import { switchOrder, toggleNotes } from './events.js';
-import { saveOrderItem, setUpAutoComplete, addNewOrderItem, deleteOrderItem } from './savedata.js';
+import { saveOrderItem, setUpAutoComplete, addNewOrderItem, deleteOrderItem, addNewOrderItemButtonPressed } from './savedata.js';
 
 
 
@@ -33,7 +33,7 @@ function init() {
 addEvent("loadorder", switchOrder, setUpAutoComplete);
 addEvent("save-order-item", saveOrderItem, setUpAutoComplete);
 addEvent("toggle-notes", toggleNotes, setUpAutoComplete);
-addEvent("add-order-item", addNewOrderItem, setUpAutoComplete);
+addEvent("add-order-item", addNewOrderItemButtonPressed, setUpAutoComplete);
 addEvent("delete-order-item", deleteOrderItem, setUpAutoComplete);
 
 
