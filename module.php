@@ -107,7 +107,7 @@ class ExampleModule extends Module {
 			$record->Id=null;//"8028D000000MBZfQAO"; //if its a new order item //8028D000000MBZfQAO
 			//$record->ContactName="Elijah R.L. Brown";
 			//$record->Product2Name="CLE Archive: 2015 House Bill 2320 (Package)";
-			$record->Contact__c=$body->ContactId;
+			//$record->Contact__c=$body->ContactId;
 			//$record->Product2Id="01t0a000004Ov6bAAC";
 			$record->Description=$body->Description;
 			$record->Note_1__c=$body->Note_1__c;
@@ -136,7 +136,7 @@ class ExampleModule extends Module {
 		}
 		
 		$result = $api->upsert("OrderItem", $record); //something happens to record
-		return $result;
+		return $result->getBody();
 
 		//return $result; //should be result, which contains the id
 	}

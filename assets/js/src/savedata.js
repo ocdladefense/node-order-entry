@@ -22,7 +22,7 @@ function saveOrderItem(props) {
         //take the id, return from server, if neccessary update the effected row (could use regular dom methods)
     }
 
-    savedOrderItem.then(
+    let varName = savedOrderItem.then(
         function (orderItem) {
             return null;
             //dom operations, return promise of vnodes, ect
